@@ -14,23 +14,14 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-      <View
+      <Text
         style={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 8,
-          alignItems: 'center',
+          color: '#1e1e1e',
+          fontSize: 18,
+          fontFamily: 'IBMPlexSansCondensed-Regular',
         }}>
-        <Square weight="bold" color="#1e1e1e" />
-        <Text
-          style={{
-            color: '#1e1e1e',
-            fontSize: 18,
-            fontFamily: 'IBMPlexSansCondensed-Regular',
-          }}>
-          {item.title}
-        </Text>
-      </View>
+        {item.title}
+      </Text>
       <Pressable
         onPress={() => navigation.navigate('RoutineView')}
         style={{
