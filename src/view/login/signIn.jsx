@@ -19,27 +19,32 @@ export default function SignIn({navigation}) {
 
   async function handleLogin() {
     setIsLoading(true);
-    if (!username || !password) {
-      setIsLoading(false);
-      return;
-    }
+    // if (!username || !password) {
+    //   setIsLoading(false);
+    //   return;
+    // }
+
     const userValidate = {
       username,
       password,
     };
 
-    await loginUserService(userValidate)
-      .then(responseLogin => {
-        if (responseLogin.status === 200) {
-          navigation.navigate('DashboardView');
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // await loginUserService(userValidate)
+    //   .then(responseLogin => {
+    //     if (responseLogin.status === 200) {
+    //       navigation.navigate('DashboardView');
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
+
+    setTimeout(() => {
+      navigation.navigate('DashboardView');
+    }, 3000);
   }
 
   return (
