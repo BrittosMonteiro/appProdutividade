@@ -8,6 +8,7 @@ export default function TasksListItem({navigation, item}) {
 
   return (
     <Pressable
+      onPress={() => navigation.navigate('TaskItemView', {item})}
       style={{
         display: 'flex',
         flexDirection: 'column',

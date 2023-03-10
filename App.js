@@ -9,6 +9,7 @@ import TasksView from './src/view/tasks/tasksView';
 import ListsView from './src/view/lists/listsView';
 import RoutineView from './src/view/routine/routineView';
 import ProfileView from './src/view/profile/profileView';
+import TaskItemView from './src/view/tasks/taskItemView';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="DashboardView" component={DashboardView} />
         <Stack.Screen name="TasksView" component={TasksView} />
+        <Stack.Screen name="TaskItemView" component={TaskItemView} />
         <Stack.Screen name="ListsView" component={ListsView} />
         <Stack.Screen name="RoutineView" component={RoutineView} />
         <Stack.Screen name="ProfileView" component={ProfileView} />

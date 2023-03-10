@@ -1,5 +1,6 @@
+import {CaretRight} from 'phosphor-react-native';
 import * as React from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 import EmptyMessage from '../../components/EmptyMessage';
 
 import Header from '../../components/Header';
@@ -43,7 +44,31 @@ export default function TasksView({navigation}) {
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           paddingVertical: 16,
+          gap: 16,
         }}>
+        <View style={{display: 'flex', paddingHorizontal: 16}}>
+          <Pressable
+            onPress={() => navigation.navigate('TaskItemView', {item: null})}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              padding: 8,
+              backgroundColor: '#108FD8',
+              borderRadius: 4,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                fontSize: 16,
+              }}>
+              ADICIONAR TAREFA
+            </Text>
+            <CaretRight weight="bold" size={24} color={'#fff'} />
+          </Pressable>
+        </View>
         <ScrollView
           contentContainerStyle={{
             display: 'flex',
