@@ -22,7 +22,9 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
         {item.title}
       </Text>
       <Pressable
-        onPress={() => navigation.navigate('RoutineView')}
+        onPress={() =>
+          navigation.navigate('RoutineItemView', {currentActivity: item})
+        }
         style={{
           paddingVertical: 4,
           paddingHorizontal: 8,
