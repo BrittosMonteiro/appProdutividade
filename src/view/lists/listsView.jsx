@@ -9,29 +9,81 @@ import EmptyMessage from '../../components/EmptyMessage';
 export default function ListsView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
 
-  const tasks = [
+  const lists = [
     {
       done: '4',
+      items: [
+        {
+          title: 'Pão integral Wickbold',
+          status: true,
+        },
+        {
+          title: 'Wrap',
+          status: true,
+        },
+        {
+          title: 'Geléia de morango',
+          status: true,
+        },
+        {
+          title: 'Suco de Uva - Campo largo',
+          status: true,
+        },
+      ],
       pending: '0',
       priority: 0,
       title: 'Supermercado',
+      description: 'Brasil Atacadista',
     },
     {
-      done: '5',
-      pending: '2',
+      done: '2',
+      items: [
+        {
+          title: 'Ovos',
+          status: true,
+        },
+        {
+          title: 'Açucar mascavo',
+          status: true,
+        },
+      ],
+      pending: '0',
       priority: 1,
       title: 'Receita bolo de banana',
     },
     {
-      done: '5',
-      pending: '9',
+      done: '2',
+      items: [
+        {
+          title: 'Hospedagens em Berlin',
+          status: true,
+        },
+        {
+          title: 'Hospedagens em München',
+          status: false,
+        },
+        {
+          title: 'Hospedagens em Stuttgart',
+          status: false,
+        },
+        {
+          title: 'Passeios em Berlin',
+          status: true,
+        },
+        {
+          title: 'Passeios em München',
+          status: false,
+        },
+      ],
+      pending: '3',
       priority: 2,
       title: 'Viagem Alemanha',
+      description: '15/Out - 02/Nov',
     },
   ];
 
   React.useEffect(() => {
-    setItemsList(tasks);
+    setItemsList(lists);
   }, []);
 
   return (

@@ -1,11 +1,12 @@
 import {Pressable, Text, View} from 'react-native';
-import {BookmarkSimple} from 'phosphor-react-native';
+import {RadioButton} from 'phosphor-react-native';
 
 export default function ListItem({navigation, item}) {
   const priority = ['39, 174, 96', '255, 122, 0', '235, 87, 87'];
 
   return (
     <Pressable
+      onPress={() => navigation.navigate('ListItemView', {currentList: item})}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -29,10 +30,7 @@ export default function ListItem({navigation, item}) {
           }}>
           {item.title}
         </Text>
-        <BookmarkSimple
-          color={`rgb(${priority[item.priority]})`}
-          weight="fill"
-        />
+        <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
       </View>
       <View
         style={{
@@ -47,7 +45,7 @@ export default function ListItem({navigation, item}) {
             fontSize: 14,
             fontFamily: 'IBMPlexSansCondensed-Regular',
           }}>
-          {item.done} concluídos
+          {item.items.filter(e => e.status === true).length} concluídos
         </Text>
         <Text
           style={{
@@ -55,7 +53,7 @@ export default function ListItem({navigation, item}) {
             fontSize: 14,
             fontFamily: 'IBMPlexSansCondensed-Regular',
           }}>
-          {item.pending} pendentes
+          {item.items.filter(e => e.status === false).length} pendentes
         </Text>
       </View>
     </Pressable>

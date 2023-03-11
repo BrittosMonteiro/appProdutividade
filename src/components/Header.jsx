@@ -19,6 +19,7 @@ export default function Header({navigation, title}) {
         <CaretLeft weight="bold" color="#fff" size={28} />
       </Pressable>
       <Text
+        numberOfLines={1}
         style={{
           color: '#fff',
           fontSize: 28,

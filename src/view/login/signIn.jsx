@@ -44,7 +44,7 @@ export default function SignIn({navigation}) {
 
     setTimeout(() => {
       navigation.navigate('DashboardView');
-    }, 3000);
+    }, 1500);
   }
 
   return (

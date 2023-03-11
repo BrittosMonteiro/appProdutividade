@@ -1,20 +1,39 @@
-import {Circle, RadioButton} from 'phosphor-react-native';
 import * as React from 'react';
-import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {
+  CheckSquare,
+  Circle,
+  Plus,
+  RadioButton,
+  Square,
+  Trash,
+} from 'phosphor-react-native';
 
 import Header from '../../components/Header';
+import HorizontalRule from '../../components/HorizontalRule';
 import TemplateScreen from '../templateScreen';
+import ManageItemFromCheckList from './components/manageItemFromCheckList';
 
-export default function TaskItemView({route, navigation}) {
-  const {currentTask} = route.params;
+export default function ListItemView({route, navigation}) {
+  const {currentList} = route.params;
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [priority, setPriority] = React.useState(1);
+  const [items, setItems] = React.useState([]);
+  const [openModal, setOpenModal] = React.useState(false);
 
   React.useEffect(() => {
-    setTitle(currentTask?.title);
-    setPriority(currentTask?.priority);
-    setDescription(currentTask?.description);
+    setTitle(currentList?.title);
+    setPriority(currentList?.priority);
+    setDescription(currentList?.description);
+    setItems(currentList?.items);
   }, []);
 
   const priorityLevel = [
@@ -48,9 +67,30 @@ export default function TaskItemView({route, navigation}) {
     navigation.goBack();
   }
 
+  function changeItemStatus(index) {
+    const itemToChange = items[index];
+    itemToChange.status = !itemToChange.status;
+    items[index] = itemToChange;
+  }
+
+  function closeModal() {
+    setOpenModal(false);
+  }
+
+  function addItem(newItem) {
+    items.unshift(newItem);
+    setItems(items);
+  }
+
+  function removeItemFromCheckList(index) {
+    console.log(index);
+    // const newCheckList = items.splice(index, 1);
+    // setItems(newCheckList);
+  }
+
   return (
     <TemplateScreen>
-      <Header navigation={navigation} title={title || 'CRIAR TAREFA'} />
+      <Header navigation={navigation} title={title || 'CRIAR LISTA'} />
       <View
         style={{
           display: 'flex',
@@ -62,7 +102,7 @@ export default function TaskItemView({route, navigation}) {
           contentContainerStyle={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 16,
+            gap: 24,
             paddingHorizontal: 16,
           }}>
           <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
@@ -90,6 +130,8 @@ export default function TaskItemView({route, navigation}) {
               onChangeText={text => setTitle(text)}
             />
           </View>
+
+          <HorizontalRule />
 
           <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
             <Text
@@ -144,6 +186,96 @@ export default function TaskItemView({route, navigation}) {
             </View>
           </View>
 
+          <HorizontalRule />
+
+          <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: 'IBMPlexSansCondensed-Regular',
+                  color: '#fff',
+                }}>
+                Itens
+              </Text>
+              <ManageItemFromCheckList
+                open={openModal}
+                onClose={closeModal}
+                addItem={addItem}
+              />
+              <Pressable
+                onPress={() => setOpenModal(true)}
+                style={{
+                  backgroundColor: `rgb(${priorityLevel[priority].color})`,
+                  padding: 4,
+                  borderRadius: 50,
+                }}>
+                <Plus weight="bold" color="#fff" size={20} />
+              </Pressable>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: 16,
+              }}>
+              {items.map((item, index) => (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 16,
+                  }}
+                  key={index}>
+                  <Pressable
+                    onPress={() => changeItemStatus(index)}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: 8,
+                    }}>
+                    {item.status ? (
+                      <CheckSquare
+                        weight="fill"
+                        size={28}
+                        style={{margin: 0, padding: 0, backgroundColor: ''}}
+                        color={`rgb(${priorityLevel[priority].color})`}
+                      />
+                    ) : (
+                      <Square
+                        weight="bold"
+                        size={28}
+                        style={{margin: 0, padding: 0, backgroundColor: ''}}
+                        color={'#fff'}
+                      />
+                    )}
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'IBMPlexSansCondensed-Medium',
+                        fontSize: 18,
+                      }}>
+                      {item.title}
+                    </Text>
+                  </Pressable>
+                  <Pressable onPress={() => removeItemFromCheckList(index)}>
+                    <Trash weight={'fill'} color="rgb(235, 87, 87)" />
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <HorizontalRule />
+
           <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
             <Text
               style={{
@@ -172,6 +304,7 @@ export default function TaskItemView({route, navigation}) {
               multiline={true}
             />
           </View>
+
           <Pressable
             onPress={() => createTask()}
             style={{

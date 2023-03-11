@@ -6,24 +6,76 @@ import HorizontalRule from '../../../components/HorizontalRule';
 import DashboardMiniListItem from './dashboardMiniListItem';
 
 export default function DashboardMiniList({navigation}) {
-  const list = [
+  const lists = [
     {
       done: '4',
+      items: [
+        {
+          title: 'Pão integral Wickbold',
+          status: true,
+        },
+        {
+          title: 'Wrap',
+          status: true,
+        },
+        {
+          title: 'Geléia de morango',
+          status: true,
+        },
+        {
+          title: 'Suco de Uva - Campo largo',
+          status: true,
+        },
+      ],
       pending: '0',
-      priority: 1,
+      priority: 0,
       title: 'Supermercado',
+      description: 'Brasil Atacadista',
     },
     {
-      done: '5',
-      pending: '2',
-      priority: 2,
+      done: '2',
+      items: [
+        {
+          title: 'Ovos',
+          status: true,
+        },
+        {
+          title: 'Açucar mascavo',
+          status: true,
+        },
+      ],
+      pending: '0',
+      priority: 1,
       title: 'Receita bolo de banana',
     },
     {
-      done: '5',
-      pending: '9',
-      priority: 3,
+      done: '2',
+      items: [
+        {
+          title: 'Hospedagens em Berlin',
+          status: true,
+        },
+        {
+          title: 'Hospedagens em München',
+          status: false,
+        },
+        {
+          title: 'Hospedagens em Stuttgart',
+          status: false,
+        },
+        {
+          title: 'Passeios em Berlin',
+          status: true,
+        },
+        {
+          title: 'Passeios em München',
+          status: false,
+        },
+      ],
+      pending: '3',
+      priority: 2,
       title: 'Viagem Alemanha',
+      description: '15/Out - 02/Nov',
     },
   ];
 
@@ -52,10 +104,10 @@ export default function DashboardMiniList({navigation}) {
           shadowOpacity: 0.2,
           shadowRadius: 3,
         }}>
-        {list.map((item, index) => (
+        {lists.map((item, index) => (
           <React.Fragment key={index}>
             <DashboardMiniListItem navigation={navigation} item={item} />
-            {index < list.length - 1 && <HorizontalRule />}
+            {index < lists.length - 1 && <HorizontalRule />}
           </React.Fragment>
         ))}
       </View>

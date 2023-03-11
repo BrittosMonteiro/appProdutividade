@@ -1,10 +1,12 @@
 import {Pressable, Text, View} from 'react-native';
-import {BookmarkSimple} from 'phosphor-react-native';
+import {RadioButton} from 'phosphor-react-native';
 
 export default function DashboardMiniListItem({item, navigation}) {
+  const priority = ['39, 174, 96', '255, 122, 0', '235, 87, 87'];
+
   return (
     <Pressable
-      onPress={() => navigation.navigate('ListsView')}
+      onPress={() => navigation.navigate('ListItemView', {currentList: item})}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -25,15 +27,7 @@ export default function DashboardMiniListItem({item, navigation}) {
           }}>
           {item.title}
         </Text>
-        {item.priority === 1 && (
-          <BookmarkSimple color="#EB5757" weight="fill" />
-        )}
-        {item.priority === 2 && (
-          <BookmarkSimple color="#FF7A00" weight="fill" />
-        )}
-        {item.priority === 3 && (
-          <BookmarkSimple color="#27AE60" weight="fill" />
-        )}
+        <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
       </View>
       <View
         style={{

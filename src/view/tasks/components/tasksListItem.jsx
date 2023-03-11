@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {Pressable, Text, View} from 'react-native';
 
-import {BookmarkSimple, Square} from 'phosphor-react-native';
+import {RadioButton, Square} from 'phosphor-react-native';
 
 export default function TasksListItem({navigation, item}) {
   const priority = ['39, 174, 96', '255, 122, 0', '235, 87, 87'];
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('TaskItemView', {item})}
+      onPress={() => navigation.navigate('TaskItemView', {currentTask: item})}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -41,10 +41,7 @@ export default function TasksListItem({navigation, item}) {
             {item.title}
           </Text>
         </View>
-        <BookmarkSimple
-          color={`rgb(${priority[item.priority]})`}
-          weight="fill"
-        />
+        <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
       </View>
     </Pressable>
   );

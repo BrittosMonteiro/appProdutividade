@@ -1,5 +1,4 @@
 import {Pressable, Text, View} from 'react-native';
-import {Square} from 'phosphor-react-native';
 
 export default function DashboardMiniRoutineListItem({navigation, item}) {
   return (
@@ -18,7 +17,7 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
         style={{
           color: '#1e1e1e',
           fontSize: 18,
-          fontFamily: 'IBMPlexSansCondensed-Regular',
+          fontFamily: 'IBMPlexSansCondensed-Medium',
         }}>
         {item.title}
       </Text>
