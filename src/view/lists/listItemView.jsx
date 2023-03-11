@@ -30,10 +30,12 @@ export default function ListItemView({route, navigation}) {
   const [openModal, setOpenModal] = React.useState(false);
 
   React.useEffect(() => {
-    setTitle(currentList?.title);
-    setPriority(currentList?.priority);
-    setDescription(currentList?.description);
-    setItems(currentList?.items);
+    if (currentList) {
+      setTitle(currentList.title);
+      setPriority(currentList.priority);
+      setDescription(currentList.description);
+      setItems(currentList.items);
+    }
   }, []);
 
   const priorityLevel = [
@@ -211,7 +213,9 @@ export default function ListItemView({route, navigation}) {
               <Pressable
                 onPress={() => setOpenModal(true)}
                 style={{
-                  backgroundColor: `rgb(${priorityLevel[priority].color})`,
+                  backgroundColor: `rgb(${
+                    priorityLevel[priority]?.color || '#fff'
+                  })`,
                   padding: 4,
                   borderRadius: 50,
                 }}>
@@ -225,52 +229,64 @@ export default function ListItemView({route, navigation}) {
                 justifyContent: 'space-between',
                 gap: 16,
               }}>
-              {items.map((item, index) => (
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 16,
-                  }}
-                  key={index}>
-                  <Pressable
-                    onPress={() => changeItemStatus(index)}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      gap: 8,
-                    }}>
-                    {item.status ? (
-                      <CheckSquare
-                        weight="fill"
-                        size={28}
-                        style={{margin: 0, padding: 0, backgroundColor: ''}}
-                        color={`rgb(${priorityLevel[priority].color})`}
-                      />
-                    ) : (
-                      <Square
-                        weight="bold"
-                        size={28}
-                        style={{margin: 0, padding: 0, backgroundColor: ''}}
-                        color={'#fff'}
-                      />
-                    )}
-                    <Text
+              {items && items.length > 0 ? (
+                <>
+                  {items.map((item, index) => (
+                    <View
                       style={{
-                        color: '#fff',
-                        fontFamily: 'IBMPlexSansCondensed-Medium',
-                        fontSize: 18,
-                      }}>
-                      {item.title}
-                    </Text>
-                  </Pressable>
-                  <Pressable onPress={() => removeItemFromCheckList(index)}>
-                    <Trash weight={'fill'} color="rgb(235, 87, 87)" />
-                  </Pressable>
-                </View>
-              ))}
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 16,
+                      }}
+                      key={index}>
+                      <Pressable
+                        onPress={() => changeItemStatus(index)}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          gap: 8,
+                        }}>
+                        {item.status ? (
+                          <CheckSquare
+                            weight="fill"
+                            size={28}
+                            style={{margin: 0, padding: 0, backgroundColor: ''}}
+                            color={`rgb(${priorityLevel[priority].color})`}
+                          />
+                        ) : (
+                          <Square
+                            weight="bold"
+                            size={28}
+                            style={{margin: 0, padding: 0, backgroundColor: ''}}
+                            color={'#fff'}
+                          />
+                        )}
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontFamily: 'IBMPlexSansCondensed-Medium',
+                            fontSize: 18,
+                          }}>
+                          {item.title}
+                        </Text>
+                      </Pressable>
+                      <Pressable onPress={() => removeItemFromCheckList(index)}>
+                        <Trash weight={'fill'} color="rgb(235, 87, 87)" />
+                      </Pressable>
+                    </View>
+                  ))}
+                </>
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Regular',
+                    fontSize: 18,
+                  }}>
+                  NÃO HÁ ITENS NA LISTA
+                </Text>
+              )}
             </View>
           </View>
 
@@ -368,7 +384,7 @@ export default function ListItemView({route, navigation}) {
                 color: 'rgb(235, 87, 87)',
                 fontSize: 18,
               }}>
-              EXCLUIR TAREFA
+              EXCLUIR LISTA
             </Text>
           </Pressable>
         </ScrollView>

@@ -1,10 +1,11 @@
 import * as React from 'react';
-import {ScrollView, View} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 
 import Header from '../../components/Header';
 import TemplateScreen from '../templateScreen';
 import ListItem from './components/listItem';
 import EmptyMessage from '../../components/EmptyMessage';
+import {CaretRight} from 'phosphor-react-native';
 
 export default function ListsView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
@@ -98,7 +99,35 @@ export default function ListsView({navigation}) {
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           paddingVertical: 16,
+          gap: 16,
         }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+          }}>
+          <Pressable
+            onPress={() => navigation.navigate('ListItemView', {item: null})}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              padding: 8,
+              backgroundColor: '#108FD8',
+              borderRadius: 4,
+              justifyContent: 'space-between',
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                fontSize: 16,
+              }}>
+              ADICIONAR LISTA
+            </Text>
+            <CaretRight weight="bold" size={24} color={'#fff'} />
+          </Pressable>
+        </View>
         <ScrollView
           contentContainerStyle={{
             display: 'flex',
@@ -113,7 +142,7 @@ export default function ListsView({navigation}) {
               ))}
             </>
           ) : (
-            <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+            <EmptyMessage message={'VOCÊ NÃO TEM LISTAS'} />
           )}
         </ScrollView>
       </View>

@@ -28,7 +28,10 @@ export default function RoutineListItem({navigation, item}) {
           }}>
           {item.title}
         </Text>
-        <Pressable onPress={() => null}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate('RoutineItemView', {currentActivity: item})
+          }>
           <CaretRight color="#1e1e1e" weight="bold" />
         </Pressable>
       </View>

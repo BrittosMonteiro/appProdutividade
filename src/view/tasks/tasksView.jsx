@@ -46,7 +46,12 @@ export default function TasksView({navigation}) {
           paddingVertical: 16,
           gap: 16,
         }}>
-        <View style={{display: 'flex', paddingHorizontal: 16}}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+          }}>
           <Pressable
             onPress={() => navigation.navigate('TaskItemView', {item: null})}
             style={{
@@ -56,7 +61,6 @@ export default function TasksView({navigation}) {
               backgroundColor: '#108FD8',
               borderRadius: 4,
               justifyContent: 'space-between',
-              alignItems: 'center',
             }}>
             <Text
               style={{

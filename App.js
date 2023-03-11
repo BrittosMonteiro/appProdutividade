@@ -11,6 +11,7 @@ import RoutineView from './src/view/routine/routineView';
 import ProfileView from './src/view/profile/profileView';
 import TaskItemView from './src/view/tasks/taskItemView';
 import ListItemView from './src/view/lists/listItemView';
+import RoutineItemView from './src/view/routine/routineItemView';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ export default function App() {
         <Stack.Screen name="ListsView" component={ListsView} />
         <Stack.Screen name="ListItemView" component={ListItemView} />
         <Stack.Screen name="RoutineView" component={RoutineView} />
+        <Stack.Screen name="RoutineItemView" component={RoutineItemView} />
         <Stack.Screen name="ProfileView" component={ProfileView} />
       </Stack.Navigator>
     </NavigationContainer>
