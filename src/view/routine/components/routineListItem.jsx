@@ -9,9 +9,7 @@ export default function RoutineListItem({navigation, item}) {
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
-        backgroundColor: '#fff',
-        padding: 8,
-        borderRadius: 4,
+        paddingVertical: 8,
       }}>
       <View
         style={{
@@ -32,7 +30,7 @@ export default function RoutineListItem({navigation, item}) {
           onPress={() =>
             navigation.navigate('RoutineItemView', {idActivity: item.id})
           }>
-          <CaretRight color="#1e1e1e" weight="bold" />
+          <CaretRight color="#1e1e1e" weight="bold" size={24} />
         </Pressable>
       </View>
     </View>

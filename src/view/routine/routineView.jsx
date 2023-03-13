@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import RoutineListItem from './components/routineListItem';
 import EmptyMessage from '../../components/EmptyMessage';
 import {readRoutineListService} from '../../service/routineService';
+import HorizontalRule from '../../components/HorizontalRule';
 
 export default function RoutineView({navigation}) {
   const [items, setItems] = React.useState([]);
@@ -80,17 +81,16 @@ export default function RoutineView({navigation}) {
           contentContainerStyle={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 16,
+            gap: 8,
             paddingHorizontal: 16,
           }}>
           {items.length > 0 ? (
             <>
               {items.map((item, index) => (
-                <RoutineListItem
-                  item={item}
-                  navigation={navigation}
-                  key={index}
-                />
+                <React.Fragment key={index}>
+                  <RoutineListItem item={item} navigation={navigation} />
+                  {index < items.length - 1 && <HorizontalRule />}
+                </React.Fragment>
               ))}
             </>
           ) : (

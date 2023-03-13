@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View} from 'react-native';
 import EmptyMessage from '../../../components/EmptyMessage';
+import HorizontalRule from '../../../components/HorizontalRule';
 
 import Title from '../../../components/Title';
 import {readRoutineMiniListService} from '../../../service/routineService';
@@ -49,11 +50,13 @@ export default function DashboardMiniRoutineList({navigation}) {
         {items.length > 0 ? (
           <>
             {items.map((item, index) => (
-              <DashboardMiniRoutineListItem
-                item={item}
-                key={index}
-                navigation={navigation}
-              />
+              <React.Fragment key={index}>
+                <DashboardMiniRoutineListItem
+                  item={item}
+                  navigation={navigation}
+                />
+                {index < items.length - 1 && <HorizontalRule />}
+              </React.Fragment>
             ))}
           </>
         ) : (

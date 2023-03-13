@@ -1,3 +1,4 @@
+import {CaretRight} from 'phosphor-react-native';
 import {Pressable, Text, View} from 'react-native';
 
 export default function DashboardMiniRoutineListItem({navigation, item}) {
@@ -9,10 +10,7 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        gap: 8,
-        backgroundColor: '#fff',
-        padding: 8,
-        borderRadius: 4,
+        paddingVertical: 8,
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
@@ -24,6 +22,7 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
         }}>
         {item.title}
       </Text>
+      <CaretRight weight="bold" size={24} color={'#1e1e1e'} />
     </Pressable>
   );
 }
