@@ -79,7 +79,7 @@ export default function ListItemView({route, navigation}) {
       .catch(err => {});
   }
 
-  async function updateList() {
+  async function updateList(refresh) {
     const list = {
       idList,
       list: {
@@ -94,7 +94,11 @@ export default function ListItemView({route, navigation}) {
     await updateListService(list)
       .then(responseUpdate => {
         if (responseUpdate.status === 200) {
-          goBack();
+          if (refresh) {
+            loadList();
+          } else {
+            goBack();
+          }
         }
       })
       .catch(err => {});
@@ -127,6 +131,8 @@ export default function ListItemView({route, navigation}) {
     const itemToChange = items[index];
     itemToChange.status = !itemToChange.status;
     items[index] = itemToChange;
+    setItems(items);
+    updateList(true);
   }
 
   function closeModal() {
@@ -134,12 +140,16 @@ export default function ListItemView({route, navigation}) {
   }
 
   function addItem(newItem) {
-    items.unshift(newItem);
+    items.push(newItem);
     setItems(items);
+    updateList(true);
   }
 
   function removeItemFromCheckList(index) {
-    console.log(index);
+    let newArray = items;
+    newArray.splice(index, 1);
+    setItems(newArray);
+    updateList(true);
   }
 
   React.useEffect(() => {
@@ -382,7 +392,7 @@ export default function ListItemView({route, navigation}) {
           {id ? (
             <>
               <Pressable
-                onPress={() => updateList()}
+                onPress={() => updateList(false)}
                 style={{
                   display: 'flex',
                   flexDirection: 'row',

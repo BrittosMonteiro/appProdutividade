@@ -1,5 +1,5 @@
 import {Pressable, Text, View} from 'react-native';
-import {RadioButton} from 'phosphor-react-native';
+import {Check, CheckCircle, RadioButton} from 'phosphor-react-native';
 
 export default function ListItem({navigation, item}) {
   const priority = ['39, 174, 96', '255, 122, 0', '235, 87, 87'];
@@ -39,22 +39,38 @@ export default function ListItem({navigation, item}) {
           justifyContent: 'space-between',
           alignItems: 'flex-start',
         }}>
-        <Text
-          style={{
-            color: '#1e1e1e',
-            fontSize: 14,
-            fontFamily: 'IBMPlexSansCondensed-Regular',
-          }}>
-          {item.items.filter(e => e.status === true).length} concluídos
-        </Text>
-        <Text
-          style={{
-            color: '#1e1e1e',
-            fontSize: 14,
-            fontFamily: 'IBMPlexSansCondensed-Regular',
-          }}>
-          {item.items.filter(e => e.status === false).length} pendentes
-        </Text>
+        {item.items.length > 0 && item.items.every(e => e.status === true) ? (
+          <View style={{display: 'flex', flexDirection: 'row', gap: 4}}>
+            <CheckCircle size={18} weight="fill" color="green" />
+            <Text
+              style={{
+                color: '#1e1e1e',
+                fontSize: 14,
+                fontFamily: 'IBMPlexSansCondensed-Regular',
+              }}>
+              100% concluído
+            </Text>
+          </View>
+        ) : (
+          <>
+            <Text
+              style={{
+                color: '#1e1e1e',
+                fontSize: 14,
+                fontFamily: 'IBMPlexSansCondensed-Regular',
+              }}>
+              {item.items.filter(e => e.status === true).length} concluídos
+            </Text>
+            <Text
+              style={{
+                color: '#1e1e1e',
+                fontSize: 14,
+                fontFamily: 'IBMPlexSansCondensed-Regular',
+              }}>
+              {item.items.filter(e => e.status === false).length} pendentes
+            </Text>
+          </>
+        )}
       </View>
     </Pressable>
   );
