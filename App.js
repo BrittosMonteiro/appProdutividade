@@ -6,12 +6,12 @@ import SignIn from './src/view/login/signIn';
 import SignUp from './src/view/login/signUp';
 import DashboardView from './src/view/dashboard/dashboardView';
 import TasksView from './src/view/tasks/tasksView';
-import ListsView from './src/view/lists/listsView';
-import RoutineView from './src/view/routine/routineView';
-import ProfileView from './src/view/profile/profileView';
 import TaskItemView from './src/view/tasks/taskItemView';
+import ListsView from './src/view/lists/listsView';
 import ListItemView from './src/view/lists/listItemView';
+import RoutineView from './src/view/routine/routineView';
 import RoutineItemView from './src/view/routine/routineItemView';
+import ProfileView from './src/view/profile/profileView';
 
 const Stack = createNativeStackNavigator();
 

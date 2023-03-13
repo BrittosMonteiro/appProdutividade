@@ -4,33 +4,43 @@ import {Pressable, ScrollView, Text, View} from 'react-native';
 import EmptyMessage from '../../components/EmptyMessage';
 
 import Header from '../../components/Header';
+import {readTaskListService} from '../../service/taskService';
 import TemplateScreen from '../templateScreen';
 import TasksListItem from './components/tasksListItem';
 
 export default function TasksView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const tasks = [
-    {
-      description: 'Enviei mensagem por Whatsapp. Aguardando retorno',
-      priority: 2,
-      title: 'Marcar ortopedista',
-    },
-    {
-      description: 'Realizar pagamento R$ 88,00 no cartão',
-      priority: 1,
-      title: 'EspaçoLaser',
-    },
-    {
-      description: 'Olhar no maps',
-      priority: 0,
-      title: 'Procurar Coworking',
-    },
-  ];
+  async function loadTasks() {
+    idUser = '640dde39e1c25aac9c6a60af';
+
+    setIsLoading(true);
+
+    await readTaskListService(idUser)
+      .then(responseRead => {
+        if (responseRead) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setItemsList(response.data);
+      })
+      .catch(err => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   React.useEffect(() => {
-    setItemsList(tasks);
+    loadTasks();
   }, []);
+
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      loadTasks();
+    });
+  }, [navigation]);
 
   return (
     <TemplateScreen>

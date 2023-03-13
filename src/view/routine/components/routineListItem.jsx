@@ -30,7 +30,7 @@ export default function RoutineListItem({navigation, item}) {
         </Text>
         <Pressable
           onPress={() =>
-            navigation.navigate('RoutineItemView', {currentActivity: item})
+            navigation.navigate('RoutineItemView', {idActivity: item.id})
           }>
           <CaretRight color="#1e1e1e" weight="bold" />
         </Pressable>

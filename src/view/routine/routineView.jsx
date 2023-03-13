@@ -1,30 +1,39 @@
-import {CaretRight} from 'phosphor-react-native';
 import * as React from 'react';
+import {CaretRight} from 'phosphor-react-native';
 import {Pressable, ScrollView, Text, View} from 'react-native';
-import EmptyMessage from '../../components/EmptyMessage';
 
-import Header from '../../components/Header';
 import TemplateScreen from '../templateScreen';
+import Header from '../../components/Header';
 import RoutineListItem from './components/routineListItem';
+import EmptyMessage from '../../components/EmptyMessage';
+import {readRoutineListService} from '../../service/routineService';
 
 export default function RoutineView({navigation}) {
-  const [itemsList, setItemsList] = React.useState([]);
+  const [items, setItems] = React.useState([]);
 
-  const tasks = [
-    {
-      title: 'Beber 2L de água',
-    },
-    {
-      title: 'Fazer limpeza de pele',
-    },
-    {
-      title: 'Seguir alimentação correta',
-    },
-  ];
+  async function loadRoutines() {
+    idUser = '640dde39e1c25aac9c6a60af';
+    await readRoutineListService(idUser)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setItems(response.data);
+      })
+      .catch(err => {});
+  }
 
   React.useEffect(() => {
-    setItemsList(tasks);
+    loadRoutines();
   }, []);
+
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      loadRoutines();
+    });
+  }, [navigation]);
 
   return (
     <TemplateScreen>
@@ -74,9 +83,9 @@ export default function RoutineView({navigation}) {
             gap: 16,
             paddingHorizontal: 16,
           }}>
-          {itemsList.length > 0 ? (
+          {items.length > 0 ? (
             <>
-              {itemsList.map((item, index) => (
+              {items.map((item, index) => (
                 <RoutineListItem
                   item={item}
                   navigation={navigation}
@@ -85,7 +94,7 @@ export default function RoutineView({navigation}) {
               ))}
             </>
           ) : (
-            <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+            <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
           )}
         </ScrollView>
       </View>

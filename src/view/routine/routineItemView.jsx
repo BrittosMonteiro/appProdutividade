@@ -1,34 +1,57 @@
-import {Circle, RadioButton} from 'phosphor-react-native';
 import * as React from 'react';
 import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 
 import Header from '../../components/Header';
+import {
+  createRoutineService,
+  readRoutineService,
+} from '../../service/routineService';
 import TemplateScreen from '../templateScreen';
 
 export default function RoutineItemView({route, navigation}) {
-  const {currentActivity} = route.params;
+  const {idActivity} = route.params;
+  const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
 
-  React.useEffect(() => {
-    if (currentActivity) {
-      setTitle(currentActivity.title);
-      setDescription(currentActivity.description);
-    }
-  }, []);
-
-  async function createTask() {
-    const task = {
+  async function createRoutine() {
+    const routine = {
       title,
       description,
+      idUser: '640dde39e1c25aac9c6a60af',
     };
 
-    console.log(task);
+    await createRoutineService(routine)
+      .then(responseCreate => {
+        if (responseCreate.status === 201) {
+          goBack();
+        }
+      })
+      .catch(err => {});
   }
 
-  function cancel() {
+  async function loadRoutine() {
+    await readRoutineService(idActivity)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setId(response.data.id);
+        setTitle(response.data.title);
+        setDescription(response.data.description);
+      });
+  }
+
+  React.useEffect(() => {
+    loadRoutine();
+  }, [idActivity]);
+
+  function goBack() {
     setTitle('');
     setDescription('');
+    setId(null);
     navigation.goBack();
   }
 
@@ -103,72 +126,99 @@ export default function RoutineItemView({route, navigation}) {
               multiline={true}
             />
           </View>
-          <Pressable
-            onPress={() => createTask()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: 'rgb(39, 174, 96)',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: '#fff',
-                fontSize: 18,
-              }}>
-              CRIAR
-            </Text>
-          </Pressable>
 
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              CANCELAR
-            </Text>
-          </Pressable>
+          {id ? (
+            <>
+              <Pressable
+                onPress={() => updateRoutine()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  CRIAR
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => deleteRoutine()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  EXCLUIR ATIVIDADE
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Pressable
+                onPress={() => createRoutine()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  CRIAR
+                </Text>
+              </Pressable>
 
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              EXCLUIR ATIVIDADE
-            </Text>
-          </Pressable>
+              <Pressable
+                onPress={() => goBack()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  CANCELAR
+                </Text>
+              </Pressable>
+            </>
+          )}
         </ScrollView>
       </View>
     </TemplateScreen>

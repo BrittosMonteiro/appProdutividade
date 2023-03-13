@@ -2,7 +2,10 @@ import {Pressable, Text, View} from 'react-native';
 
 export default function DashboardMiniRoutineListItem({navigation, item}) {
   return (
-    <View
+    <Pressable
+      onPress={() =>
+        navigation.navigate('RoutineItemView', {idActivity: item.id})
+      }
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -21,23 +24,6 @@ export default function DashboardMiniRoutineListItem({navigation, item}) {
         }}>
         {item.title}
       </Text>
-      <Pressable
-        onPress={() =>
-          navigation.navigate('RoutineItemView', {currentActivity: item})
-        }
-        style={{
-          paddingVertical: 4,
-          paddingHorizontal: 8,
-        }}>
-        <Text
-          style={{
-            color: '#108FD8',
-            fontSize: 16,
-            fontFamily: 'IBMPlexSansCondensed-Medium',
-          }}>
-          Ver
-        </Text>
-      </Pressable>
-    </View>
+    </Pressable>
   );
 }

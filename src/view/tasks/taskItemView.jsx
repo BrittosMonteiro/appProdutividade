@@ -3,19 +3,20 @@ import * as React from 'react';
 import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 
 import Header from '../../components/Header';
+import {
+  createTaskService,
+  deleteTaskService,
+  readTaskService,
+  updateTaskService,
+} from '../../service/taskService';
 import TemplateScreen from '../templateScreen';
 
 export default function TaskItemView({route, navigation}) {
-  const {currentTask} = route.params;
+  const {idTask} = route.params;
+  const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [priority, setPriority] = React.useState(1);
-
-  React.useEffect(() => {
-    setTitle(currentTask?.title);
-    setPriority(currentTask?.priority);
-    setDescription(currentTask?.description);
-  }, []);
+  const [priority, setPriority] = React.useState(0);
 
   const priorityLevel = [
     {
@@ -36,17 +37,78 @@ export default function TaskItemView({route, navigation}) {
     const task = {
       title,
       description,
-      status: 0,
+      priority,
+      idUser: '640dde39e1c25aac9c6a60af',
     };
 
-    console.log(task);
+    await createTaskService(task)
+      .then(responseCreate => {
+        if (responseCreate.status === 201) {
+          goBack();
+        }
+      })
+      .catch(err => {});
   }
 
-  function cancel() {
+  async function loadTask() {
+    await readTaskService(idTask)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setId(response.data.id);
+        setTitle(response.data.title);
+        setDescription(response.data.description);
+        setPriority(response.data.priority);
+      });
+  }
+
+  async function updateTask() {
+    const data = {
+      idTask,
+      task: {
+        title,
+        description,
+        priority,
+        updatedAt: Date.now(),
+      },
+    };
+    await updateTaskService(data)
+      .then(responseUpdate => {
+        if (responseUpdate.status === 200) {
+          goBack();
+        }
+      })
+      .catch(err => {});
+  }
+
+  async function deleteTask() {
+    if (!id) {
+      return;
+    }
+
+    await deleteTaskService({idTask: id})
+      .then(responseDelete => {
+        if (responseDelete.status === 200) {
+          navigation.goBack();
+        }
+      })
+      .catch(err => {});
+  }
+
+  function goBack() {
     setTitle('');
     setDescription('');
+    setPriority(null);
+    setId(null);
     navigation.goBack();
   }
+
+  React.useEffect(() => {
+    loadTask();
+  }, [idTask]);
 
   return (
     <TemplateScreen>
@@ -172,72 +234,99 @@ export default function TaskItemView({route, navigation}) {
               multiline={true}
             />
           </View>
-          <Pressable
-            onPress={() => createTask()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: 'rgb(39, 174, 96)',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: '#fff',
-                fontSize: 18,
-              }}>
-              CRIAR
-            </Text>
-          </Pressable>
 
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              CANCELAR
-            </Text>
-          </Pressable>
+          {id ? (
+            <>
+              <Pressable
+                onPress={() => updateTask()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  ATUALIZAR
+                </Text>
+              </Pressable>
 
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              EXCLUIR TAREFA
-            </Text>
-          </Pressable>
+              <Pressable
+                onPress={() => deleteTask()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  EXCLUIR TAREFA
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Pressable
+                onPress={() => createTask()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  CRIAR
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => goBack()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  CANCELAR
+                </Text>
+              </Pressable>
+            </>
+          )}
         </ScrollView>
       </View>
     </TemplateScreen>

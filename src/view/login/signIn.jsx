@@ -1,51 +1,58 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Button,
   Pressable,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import {loginUserService} from '../../service/userService';
+import {useDispatch} from 'react-redux/es/exports';
+import {loginService} from '../../service/loginService';
 
 import TemplateScreen from '../templateScreen';
 import loginStyle from './loginStyle';
 
+import {setUser} from '../../store/action/loginAction';
+
 export default function SignIn({navigation}) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // const dispatch = useDispatch();
+  const [username, setUsername] = useState('brittosmonteiro');
+  const [password, setPassword] = useState('teste123');
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleLogin() {
     setIsLoading(true);
-    // if (!username || !password) {
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if (!username || !password) {
+      setIsLoading(false);
+      return;
+    }
 
     const userValidate = {
       username,
       password,
     };
 
-    // await loginUserService(userValidate)
-    //   .then(responseLogin => {
-    //     if (responseLogin.status === 200) {
-    //       navigation.navigate('DashboardView');
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
-
-    setTimeout(() => {
-      navigation.navigate('DashboardView');
-    }, 1500);
+    await loginService(userValidate)
+      .then(responseLogin => {
+        if (responseLogin.status === 200) {
+          return responseLogin.json();
+        }
+      })
+      .then(response => {
+        // dispatch(setUser(response));
+        navigation.navigate('DashboardView');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
+
+  useEffect(() => {
+    handleLogin();
+  }, []);
 
   return (
     <TemplateScreen>

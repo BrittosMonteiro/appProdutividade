@@ -8,7 +8,7 @@ export default function TasksListItem({navigation, item}) {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('TaskItemView', {currentTask: item})}
+      onPress={() => navigation.navigate('TaskItemView', {idTask: item.id})}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -31,7 +31,7 @@ export default function TasksListItem({navigation, item}) {
             alignItems: 'center',
             gap: 8,
           }}>
-          <Square color="#1e1e1e" weight="bold" />
+          {/* <Square color="#1e1e1e" weight="bold" /> */}
           <Text
             style={{
               color: '#1e1e1e',

@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {createUserService} from '../../service/userService';
+import {createUserService} from '../../service/loginService';
 
 import TemplateScreen from '../templateScreen';
 
@@ -21,17 +21,17 @@ export default function SignUp({navigation}) {
 
   async function handleSignIn() {
     setIsLoading(true);
-    // if (!name || !username || !email || !password || !confirmPassword) {
-    //   console.log('Preencher form');
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if (!name || !username || !email || !password || !confirmPassword) {
+      console.log('Preencher form');
+      setIsLoading(false);
+      return;
+    }
 
-    // if (password !== confirmPassword) {
-    //   console.log('Senhas não são iguais');
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if (password !== confirmPassword) {
+      console.log('Senhas não são iguais');
+      setIsLoading(false);
+      return;
+    }
 
     const user = {
       name,
@@ -41,26 +41,21 @@ export default function SignUp({navigation}) {
       password,
     };
 
-    // await createUserService(user)
-    //   .then(responseCreate => {
-    //     if (responseCreate.status === 201) {
-    //       return responseCreate.json();
-    //     }
-    //   })
-    //   .then(response => {
-    //     console.log(response);
-    //     navigation.navigate('DashboardView');
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
-
-    setTimeout(() => {
-      navigation.navigate('DashboardView');
-    }, 3000);
+    await createUserService(user)
+      .then(responseCreate => {
+        if (responseCreate.status === 201) {
+          return responseCreate.json();
+        }
+      })
+      .then(response => {
+        navigation.navigate('DashboardView');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (

@@ -5,7 +5,7 @@ export default function DashboardMiniTaskListItem({item, navigation}) {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('TaskItemView', {currentTask: item})}
+      onPress={() => navigation.navigate('TaskItemView', {idTask: item.id})}
       style={{
         display: 'flex',
         flexDirection: 'column',

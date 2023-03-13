@@ -81,6 +81,51 @@ export default function ListsView({navigation}) {
       title: 'Viagem Alemanha',
       description: '15/Out - 02/Nov',
     },
+    {
+      done: 0,
+      items: [
+        {
+          title: 'Limpar cantinhos',
+          status: false,
+        },
+        {
+          title: 'Tirar teias de aranha',
+          status: false,
+        },
+        {
+          title: 'Limpar janelas (quarto e banheiro)',
+          status: false,
+        },
+        {
+          title: 'Banheiro',
+          status: false,
+        },
+        {
+          title: 'Lavar pote de ração',
+          status: false,
+        },
+        {
+          title: 'Focar no chão',
+          status: false,
+        },
+        {
+          title: 'Limpar rodapé',
+          status: false,
+        },
+        {
+          title: 'Bichinhos no chão',
+          status: false,
+        },
+        {
+          title: 'Formigas',
+          status: false,
+        },
+      ],
+      pending: 0,
+      priority: 2,
+      title: 'Diarista',
+      description: '',
+    },
   ];
 
   React.useEffect(() => {
