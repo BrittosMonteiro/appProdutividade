@@ -42,7 +42,7 @@ export default function DashboardMiniListItem({item, navigation}) {
             fontSize: 14,
             fontFamily: 'IBMPlexSansCondensed-Regular',
           }}>
-          {item.done} concluídos
+          {item.items.filter(e => e.status === true).length} concluídos
         </Text>
         <Text
           style={{
@@ -50,7 +50,7 @@ export default function DashboardMiniListItem({item, navigation}) {
             fontSize: 14,
             fontFamily: 'IBMPlexSansCondensed-Regular',
           }}>
-          {item.pending} pendentes
+          {item.items.filter(e => e.status === false).length} pendentes
         </Text>
       </View>
     </Pressable>

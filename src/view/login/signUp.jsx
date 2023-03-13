@@ -11,12 +11,12 @@ import {createUserService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
 
 export default function SignUp({navigation}) {
-  const [name, setName] = React.useState('Lucas');
-  const [surname, setSurname] = React.useState('Brittos');
-  const [email, setEmail] = React.useState('brittosmonteiro@gmail.com');
-  const [username, setUsername] = React.useState('brittosmonteiro');
-  const [password, setPassword] = React.useState('teste123');
-  const [confirmPassword, setConfirmPassword] = React.useState('teste123');
+  const [name, setName] = React.useState('');
+  const [surname, setSurname] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
   async function handleSignIn() {

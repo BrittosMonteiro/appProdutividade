@@ -1,9 +1,20 @@
 import * as React from 'react';
-import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import TemplateScreen from '../templateScreen';
 import Header from '../../components/Header';
 import HorizontalRule from '../../components/HorizontalRule';
+import {
+  deleteUserService,
+  updatePasswordService,
+} from '../../service/userService';
 
 export default function ProfileView({navigation}) {
   const [name, setName] = React.useState('Lucas');
@@ -15,11 +26,45 @@ export default function ProfileView({navigation}) {
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
 
   async function updatePassword() {
-    console.log('Atualizar senha');
+    if (!newPassword || !confirmNewPassword) {
+      Alert.alert('Preencher senha');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      Alert.alert('Senhas não são iguais');
+      return;
+    }
+
+    const updatePass = {
+      idUser: '640dde39e1c25aac9c6a60af',
+      password: newPassword,
+    };
+
+    await updatePasswordService(updatePass)
+      .then(responseUpdate => {
+        if (responseUpdate.status === 200) {
+          Alert.alert('Senha alterada');
+          setConfirmNewPassword('');
+          setNewPassword('');
+        } else {
+          Alert.alert('Não foi possível alterar a senha');
+        }
+      })
+      .catch(err => {});
   }
 
-  async function deleteAccount() {
-    console.log('Remover conta');
+  async function deleteUser() {
+    await deleteUserService({idUser: '640f64aaa395e6c663989a48'})
+      .then(responseDelete => {
+        if (responseDelete.status === 200) {
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'SignIn'}],
+          });
+        }
+      })
+      .catch(err => {});
   }
 
   return (
@@ -63,6 +108,8 @@ export default function ProfileView({navigation}) {
                 keyboardType={'default'}
                 defaultValue={name}
                 onChangeText={text => setName(text)}
+                editable={false}
+                selectTextOnFocus={false}
               />
             </View>
             <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
@@ -88,6 +135,8 @@ export default function ProfileView({navigation}) {
                 keyboardType={'default'}
                 defaultValue={surname}
                 onChangeText={text => setSurname(text)}
+                editable={false}
+                selectTextOnFocus={false}
               />
             </View>
             <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
@@ -113,6 +162,8 @@ export default function ProfileView({navigation}) {
                 keyboardType={'email-address'}
                 defaultValue={email}
                 onChangeText={text => setEmail(text)}
+                editable={false}
+                selectTextOnFocus={false}
               />
             </View>
             <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
@@ -138,6 +189,8 @@ export default function ProfileView({navigation}) {
                 keyboardType={'default'}
                 defaultValue={username}
                 onChangeText={text => setUsername(text)}
+                editable={false}
+                selectTextOnFocus={false}
               />
             </View>
           </View>
@@ -220,13 +273,13 @@ export default function ProfileView({navigation}) {
                   color: '#fff',
                   fontSize: 18,
                 }}>
-                SALVAR
+                ATUALIZAR
               </Text>
             </Pressable>
           </View>
           <HorizontalRule />
           <Pressable
-            onPress={() => deleteAccount()}
+            onPress={() => deleteUser()}
             style={{
               display: 'flex',
               flexDirection: 'row',

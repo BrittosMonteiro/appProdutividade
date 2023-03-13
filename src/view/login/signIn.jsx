@@ -50,10 +50,6 @@ export default function SignIn({navigation}) {
       });
   }
 
-  useEffect(() => {
-    handleLogin();
-  }, []);
-
   return (
     <TemplateScreen>
       <View
