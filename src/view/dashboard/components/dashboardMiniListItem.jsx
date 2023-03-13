@@ -6,7 +6,7 @@ export default function DashboardMiniListItem({item, navigation}) {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate('ListItemView', {currentList: item})}
+      onPress={() => navigation.navigate('ListItemView', {idList: item.id})}
       style={{
         display: 'flex',
         flexDirection: 'column',

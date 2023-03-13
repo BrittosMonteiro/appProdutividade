@@ -6,6 +6,7 @@ import TemplateScreen from '../templateScreen';
 import ListItem from './components/listItem';
 import EmptyMessage from '../../components/EmptyMessage';
 import {CaretRight} from 'phosphor-react-native';
+import {readListService} from '../../service/listsService';
 
 export default function ListsView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
@@ -128,9 +129,29 @@ export default function ListsView({navigation}) {
     },
   ];
 
+  async function loadLists() {
+    idUser = '640dde39e1c25aac9c6a60af';
+    await readListService(idUser)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setItemsList(response.data);
+      })
+      .catch(err => {});
+  }
+
   React.useEffect(() => {
-    setItemsList(lists);
+    loadLists();
   }, []);
+
+  React.useEffect(() => {
+    navigation.addListener('focus', () => {
+      loadLists();
+    });
+  }, [navigation]);
 
   return (
     <TemplateScreen>

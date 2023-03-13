@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 import {
   CheckSquare,
   Circle,
@@ -20,23 +13,21 @@ import Header from '../../components/Header';
 import HorizontalRule from '../../components/HorizontalRule';
 import TemplateScreen from '../templateScreen';
 import ManageItemFromCheckList from './components/manageItemFromCheckList';
+import {
+  createListService,
+  deleteListService,
+  readItemListService,
+  updateListService,
+} from '../../service/listsService';
 
 export default function ListItemView({route, navigation}) {
-  const {currentList} = route.params;
+  const {idList} = route.params;
+  const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [priority, setPriority] = React.useState(1);
+  const [priority, setPriority] = React.useState(null);
   const [items, setItems] = React.useState([]);
   const [openModal, setOpenModal] = React.useState(false);
-
-  React.useEffect(() => {
-    if (currentList) {
-      setTitle(currentList.title);
-      setPriority(currentList.priority);
-      setDescription(currentList.description);
-      setItems(currentList.items);
-    }
-  }, []);
 
   const priorityLevel = [
     {
@@ -53,19 +44,82 @@ export default function ListItemView({route, navigation}) {
     },
   ];
 
-  async function createTask() {
-    const task = {
+  async function createList() {
+    const list = {
       title,
       description,
-      status: 0,
+      priority,
+      item: items,
+      idUser: '640dde39e1c25aac9c6a60af',
     };
 
-    console.log(task);
+    await createListService(list)
+      .then(responseCreate => {
+        if (responseCreate.status === 201) {
+          goBack();
+        }
+      })
+      .catch(err => {});
   }
 
-  function cancel() {
+  async function loadList() {
+    await readItemListService(idList)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setId(response.data.id);
+        setTitle(response.data.title);
+        setPriority(response.data.priority);
+        setItems(response.data.items);
+        setDescription(response.data.description);
+      })
+      .catch(err => {});
+  }
+
+  async function updateList() {
+    const list = {
+      idList,
+      list: {
+        title,
+        description,
+        item: items,
+        priority,
+        updatedAt: Date.now(),
+      },
+    };
+
+    await updateListService(list)
+      .then(responseUpdate => {
+        if (responseUpdate.status === 200) {
+          goBack();
+        }
+      })
+      .catch(err => {});
+  }
+
+  async function deleteList() {
+    if (!idList || !id) {
+      return;
+    }
+
+    await deleteListService({idList})
+      .then(responseDelete => {
+        if (responseDelete.status === 200) {
+          goBack();
+        }
+      })
+      .catch(err => {});
+  }
+
+  function goBack() {
     setTitle('');
     setDescription('');
+    setId(null);
+    setPriority(null);
+    setItems([]);
     navigation.goBack();
   }
 
@@ -86,9 +140,11 @@ export default function ListItemView({route, navigation}) {
 
   function removeItemFromCheckList(index) {
     console.log(index);
-    // const newCheckList = items.splice(index, 1);
-    // setItems(newCheckList);
   }
+
+  React.useEffect(() => {
+    loadList();
+  }, [idList]);
 
   return (
     <TemplateScreen>
@@ -321,72 +377,98 @@ export default function ListItemView({route, navigation}) {
             />
           </View>
 
-          <Pressable
-            onPress={() => createTask()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: 'rgb(39, 174, 96)',
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: '#fff',
-                fontSize: 18,
-              }}>
-              CRIAR
-            </Text>
-          </Pressable>
+          {id ? (
+            <>
+              <Pressable
+                onPress={() => updateList()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  ATUALIZAR
+                </Text>
+              </Pressable>
 
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              CANCELAR
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={() => cancel()}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              paddingVertical: 12,
-              backgroundColor: '#1e1e1e',
-              borderColor: 'rgb(235, 87, 87)',
-              borderWidth: 2,
-              borderRadius: 4,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                color: 'rgb(235, 87, 87)',
-                fontSize: 18,
-              }}>
-              EXCLUIR LISTA
-            </Text>
-          </Pressable>
+              <Pressable
+                onPress={() => deleteList()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  EXCLUIR LISTA
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Pressable
+                onPress={() => createList()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: 'rgb(39, 174, 96)',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                  }}>
+                  CRIAR
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => goBack()}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingVertical: 12,
+                  backgroundColor: '#1e1e1e',
+                  borderColor: 'rgb(235, 87, 87)',
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: 'rgb(235, 87, 87)',
+                    fontSize: 18,
+                  }}>
+                  CANCELAR
+                </Text>
+              </Pressable>
+            </>
+          )}
         </ScrollView>
       </View>
     </TemplateScreen>
