@@ -4,7 +4,10 @@ import {Pressable, Text, View} from 'react-native';
 
 export default function RoutineListItem({navigation, item}) {
   return (
-    <View
+    <Pressable
+      onPress={() =>
+        navigation.navigate('RoutineItemView', {idActivity: item.id})
+      }
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -26,13 +29,8 @@ export default function RoutineListItem({navigation, item}) {
           }}>
           {item.title}
         </Text>
-        <Pressable
-          onPress={() =>
-            navigation.navigate('RoutineItemView', {idActivity: item.id})
-          }>
-          <CaretRight color="#1e1e1e" weight="bold" size={24} />
-        </Pressable>
+        <CaretRight color="#1e1e1e" weight="bold" size={24} />
       </View>
-    </View>
+    </Pressable>
   );
 }

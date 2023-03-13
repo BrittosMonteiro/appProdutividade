@@ -270,7 +270,7 @@ export default function ListItemView({route, navigation}) {
                 onPress={() => setOpenModal(true)}
                 style={{
                   backgroundColor: `rgb(${
-                    priorityLevel[priority]?.color || '#fff'
+                    priorityLevel[priority]?.color || '255, 255, 255'
                   })`,
                   padding: 4,
                   borderRadius: 50,
@@ -309,7 +309,9 @@ export default function ListItemView({route, navigation}) {
                             weight="fill"
                             size={28}
                             style={{margin: 0, padding: 0, backgroundColor: ''}}
-                            color={`rgb(${priorityLevel[priority].color})`}
+                            color={`rgb(${
+                              priorityLevel[priority]?.color || '255, 255, 255'
+                            })`}
                           />
                         ) : (
                           <Square
