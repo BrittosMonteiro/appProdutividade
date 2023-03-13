@@ -4,7 +4,9 @@ import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 import Header from '../../components/Header';
 import {
   createRoutineService,
+  deleteRoutineService,
   readRoutineService,
+  updateRoutineService,
 } from '../../service/routineService';
 import TemplateScreen from '../templateScreen';
 
@@ -42,6 +44,38 @@ export default function RoutineItemView({route, navigation}) {
         setTitle(response.data.title);
         setDescription(response.data.description);
       });
+  }
+
+  async function updateRoutine() {
+    const data = {
+      idRoutine: id,
+      routine: {
+        title,
+        description,
+        updatedAt: Date.now(),
+      },
+    };
+
+    await updateRoutineService(data)
+      .then(responseUpdate => {
+        if (responseUpdate.status === 200) {
+          goBack();
+        }
+      })
+      .catch(err => {});
+  }
+
+  async function deleteRoutine() {
+    if (!idActivity || !id) {
+      return;
+    }
+    await deleteRoutineService({idRoutine: id})
+      .then(responseDelete => {
+        if (responseDelete.status === 200) {
+          goBack();
+        }
+      })
+      .catch(err => {});
   }
 
   React.useEffect(() => {
@@ -146,7 +180,7 @@ export default function RoutineItemView({route, navigation}) {
                     color: '#fff',
                     fontSize: 18,
                   }}>
-                  CRIAR
+                  ATUALIZAR
                 </Text>
               </Pressable>
               <Pressable

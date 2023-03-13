@@ -17,7 +17,6 @@ export async function readRoutineListService(idUser) {
 }
 
 export async function readRoutineService(idRoutine) {
-  console.log(idRoutine);
   return await fetch(`${API_URL}/routines/readOne/${idRoutine}`);
 }
 
