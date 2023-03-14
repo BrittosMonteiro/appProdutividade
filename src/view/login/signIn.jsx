@@ -7,18 +7,47 @@ import {
   View,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {loginService} from '../../service/loginService';
-
 import TemplateScreen from '../templateScreen';
-import loginStyle from './loginStyle';
-
 import {setUser} from '../../store/action/loginAction';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState('brittosmonteiro');
-  const [password, setPassword] = useState('teste123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const setUserData = async data => {
+    try {
+      const jsonData = JSON.stringify(data);
+      await AsyncStorage.setItem('userData', jsonData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getUserData = async () => {
+    setIsLoading(true);
+    try {
+      const jsonStoredData = await AsyncStorage.getItem('userData');
+      const storedData = JSON.parse(jsonStoredData);
+      if (storedData !== null) {
+        dispatch(setUser(storedData));
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'DashboardView'}],
+        });
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+    } catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
+  };
 
   async function handleLogin() {
     setIsLoading(true);
@@ -40,7 +69,12 @@ export default function SignIn({navigation}) {
       })
       .then(response => {
         dispatch(setUser(response.data));
-        navigation.navigate('DashboardView');
+        setUserData(response.data);
+        // navigation.navigate('DashboardView');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'DashboardView'}],
+        });
       })
       .catch(err => {
         console.log(err);
@@ -49,6 +83,10 @@ export default function SignIn({navigation}) {
         setIsLoading(false);
       });
   }
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   return (
     <TemplateScreen>
@@ -94,6 +132,7 @@ export default function SignIn({navigation}) {
             keyboardType={'default'}
             defaultValue={username}
             onChangeText={text => setUsername(text)}
+            editable={!isLoading}
           />
           <TextInput
             style={{
@@ -111,6 +150,7 @@ export default function SignIn({navigation}) {
             secureTextEntry={true}
             defaultValue={password}
             onChangeText={text => setPassword(text)}
+            editable={!isLoading}
           />
           <Pressable
             onPress={() => handleLogin()}

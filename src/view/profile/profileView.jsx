@@ -8,12 +8,14 @@ import {
   View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TemplateScreen from '../templateScreen';
 import Header from '../../components/Header';
 import HorizontalRule from '../../components/HorizontalRule';
 import {
   deleteUserService,
+  readUserService,
   updatePasswordService,
 } from '../../service/userService';
 
@@ -21,13 +23,29 @@ export default function ProfileView({navigation}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
-  const [name, setName] = React.useState('Lucas');
-  const [surname, setSurname] = React.useState('Brittos');
-  const [email, setEmail] = React.useState('brittosmonteiro@gmail.com');
-  const [username, setUsername] = React.useState('brittosmonteiro');
+  const [name, setName] = React.useState('');
+  const [surname, setSurname] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
 
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
+
+  async function loadUserData() {
+    await readUserService(userSession.id)
+      .then(responseRead => {
+        if (responseRead.status === 200) {
+          return responseRead.json();
+        }
+      })
+      .then(response => {
+        setName(response.data.name);
+        setSurname(response.data.surname);
+        setEmail(response.data.email);
+        setUsername(response.data.username);
+      })
+      .catch(err => {});
+  }
 
   async function updatePassword() {
     if (!newPassword || !confirmNewPassword) {
@@ -62,14 +80,30 @@ export default function ProfileView({navigation}) {
     await deleteUserService({idUser: userSession.id})
       .then(responseDelete => {
         if (responseDelete.status === 200) {
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'SignIn'}],
-          });
+          signOut();
         }
       })
       .catch(err => {});
   }
+
+  async function signOut() {
+    try {
+      const storedData = await AsyncStorage.removeItem('userData');
+      if (!storedData) {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignIn'}],
+        });
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  React.useEffect(() => {
+    loadUserData();
+  }, []);
 
   return (
     <TemplateScreen>
@@ -282,6 +316,30 @@ export default function ProfileView({navigation}) {
             </Pressable>
           </View>
           <HorizontalRule />
+
+          <Pressable
+            onPress={() => signOut()}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              paddingVertical: 12,
+              backgroundColor: '#1e1e1e',
+              borderColor: 'rgb(235, 87, 87)',
+              borderWidth: 2,
+              borderRadius: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: 'rgb(235, 87, 87)',
+                fontSize: 18,
+              }}>
+              SAIR DA CONTA
+            </Text>
+          </Pressable>
+
           <Pressable
             onPress={() => deleteUser()}
             style={{
