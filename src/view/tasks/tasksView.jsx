@@ -1,23 +1,25 @@
-import {CaretRight} from 'phosphor-react-native';
 import * as React from 'react';
 import {Pressable, ScrollView, Text, View} from 'react-native';
-import EmptyMessage from '../../components/EmptyMessage';
+import {CaretRight} from 'phosphor-react-native';
+import {useSelector} from 'react-redux';
 
+import EmptyMessage from '../../components/EmptyMessage';
 import Header from '../../components/Header';
 import {readTaskListService} from '../../service/taskService';
 import TemplateScreen from '../templateScreen';
 import TasksListItem from './components/tasksListItem';
 
 export default function TasksView({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
   async function loadTasks() {
-    idUser = '640dde39e1c25aac9c6a60af';
-
     setIsLoading(true);
 
-    await readTaskListService(idUser)
+    await readTaskListService(userSession.id)
       .then(responseRead => {
         if (responseRead) {
           return responseRead.json();

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {View} from 'react-native';
+import {useSelector} from 'react-redux';
 
 import Title from '../../../components/Title';
 import HorizontalRule from '../../../components/HorizontalRule';
@@ -8,11 +9,14 @@ import EmptyMessage from '../../../components/EmptyMessage';
 import {readMiniListService} from '../../../service/listsService';
 
 export default function DashboardMiniList({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
+
   const [items, setItems] = React.useState([]);
 
   async function loadLists() {
-    idUser = '640dde39e1c25aac9c6a60af';
-    await readMiniListService(idUser)
+    await readMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
           return responseRead.json();

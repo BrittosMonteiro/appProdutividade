@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Pressable, ScrollView, Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
 import TemplateScreen from '../templateScreen';
@@ -9,6 +10,9 @@ import {CaretRight} from 'phosphor-react-native';
 import {readListService} from '../../service/listsService';
 
 export default function ListsView({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [itemsList, setItemsList] = React.useState([]);
 
   const lists = [
@@ -130,8 +134,7 @@ export default function ListsView({navigation}) {
   ];
 
   async function loadLists() {
-    idUser = '640dde39e1c25aac9c6a60af';
-    await readListService(idUser)
+    await readListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
           return responseRead.json();

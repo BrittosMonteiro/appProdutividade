@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {useDispatch} from 'react-redux/es/exports';
+import {useDispatch} from 'react-redux';
 import {loginService} from '../../service/loginService';
 
 import TemplateScreen from '../templateScreen';
@@ -15,7 +15,7 @@ import loginStyle from './loginStyle';
 import {setUser} from '../../store/action/loginAction';
 
 export default function SignIn({navigation}) {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('brittosmonteiro');
   const [password, setPassword] = useState('teste123');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ export default function SignIn({navigation}) {
         }
       })
       .then(response => {
-        // dispatch(setUser(response));
+        dispatch(setUser(response.data));
         navigation.navigate('DashboardView');
       })
       .catch(err => {

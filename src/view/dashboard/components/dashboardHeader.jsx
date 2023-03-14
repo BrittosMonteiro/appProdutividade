@@ -1,9 +1,13 @@
 import * as React from 'react';
 import {Pressable, Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 
-import {List, User} from 'phosphor-react-native';
+import {User} from 'phosphor-react-native';
 
 export default function DashboardHeader({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   return (
     <View
       style={{
@@ -26,7 +30,7 @@ export default function DashboardHeader({navigation}) {
           style={{
             fontFamily: 'IBMPlexSansCondensed-SemiBold',
           }}>
-          Lucas!
+          {userSession.name}!
         </Text>
       </Text>
       <Pressable onPress={() => navigation.navigate('ProfileView')}>

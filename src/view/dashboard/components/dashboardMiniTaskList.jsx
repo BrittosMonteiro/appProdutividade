@@ -1,17 +1,20 @@
 import * as React from 'react';
 import {ScrollView, View} from 'react-native';
-import EmptyMessage from '../../../components/EmptyMessage';
+import {useSelector} from 'react-redux';
 
+import EmptyMessage from '../../../components/EmptyMessage';
 import Title from '../../../components/Title';
 import {readTaskMiniListService} from '../../../service/taskService';
 import DashboardMiniTaskListItem from './dashboardMiniTaskListItem';
 
 export default function DashboardMiniTaskList({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [items, setItems] = React.useState([]);
 
   async function loadTasks() {
-    idUser = '640dde39e1c25aac9c6a60af';
-    await readTaskMiniListService(idUser)
+    await readTaskMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
           return responseRead.json();

@@ -8,6 +8,7 @@ import {
   Square,
   Trash,
 } from 'phosphor-react-native';
+import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
 import HorizontalRule from '../../components/HorizontalRule';
@@ -21,6 +22,9 @@ import {
 } from '../../service/listsService';
 
 export default function ListItemView({route, navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const {idList} = route.params;
   const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
@@ -50,7 +54,7 @@ export default function ListItemView({route, navigation}) {
       description,
       priority,
       item: items,
-      idUser: '640dde39e1c25aac9c6a60af',
+      idUser: userSession.id,
     };
 
     await createListService(list)

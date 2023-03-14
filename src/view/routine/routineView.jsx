@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {CaretRight} from 'phosphor-react-native';
 import {Pressable, ScrollView, Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 
 import TemplateScreen from '../templateScreen';
 import Header from '../../components/Header';
@@ -10,11 +11,13 @@ import {readRoutineListService} from '../../service/routineService';
 import HorizontalRule from '../../components/HorizontalRule';
 
 export default function RoutineView({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [items, setItems] = React.useState([]);
 
   async function loadRoutines() {
-    idUser = '640dde39e1c25aac9c6a60af';
-    await readRoutineListService(idUser)
+    await readRoutineListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
           return responseRead.json();

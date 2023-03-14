@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 
 import TemplateScreen from '../templateScreen';
 import Header from '../../components/Header';
@@ -17,6 +18,9 @@ import {
 } from '../../service/userService';
 
 export default function ProfileView({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [name, setName] = React.useState('Lucas');
   const [surname, setSurname] = React.useState('Brittos');
   const [email, setEmail] = React.useState('brittosmonteiro@gmail.com');
@@ -37,7 +41,7 @@ export default function ProfileView({navigation}) {
     }
 
     const updatePass = {
-      idUser: '640dde39e1c25aac9c6a60af',
+      idUser: userSession.id,
       password: newPassword,
     };
 
@@ -55,7 +59,7 @@ export default function ProfileView({navigation}) {
   }
 
   async function deleteUser() {
-    await deleteUserService({idUser: '640f64aaa395e6c663989a48'})
+    await deleteUserService({idUser: userSession.id})
       .then(responseDelete => {
         if (responseDelete.status === 200) {
           navigation.reset({

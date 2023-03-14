@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
+import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
 import {
@@ -11,6 +12,9 @@ import {
 import TemplateScreen from '../templateScreen';
 
 export default function RoutineItemView({route, navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const {idActivity} = route.params;
   const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
@@ -20,7 +24,7 @@ export default function RoutineItemView({route, navigation}) {
     const routine = {
       title,
       description,
-      idUser: '640dde39e1c25aac9c6a60af',
+      idUser: userSession.id,
     };
 
     await createRoutineService(routine)

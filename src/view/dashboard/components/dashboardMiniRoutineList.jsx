@@ -1,18 +1,21 @@
 import * as React from 'react';
 import {View} from 'react-native';
+import {useSelector} from 'react-redux';
+
 import EmptyMessage from '../../../components/EmptyMessage';
 import HorizontalRule from '../../../components/HorizontalRule';
-
 import Title from '../../../components/Title';
 import {readRoutineMiniListService} from '../../../service/routineService';
 import DashboardMiniRoutineListItem from './dashboardMiniRoutineListItem';
 
 export default function DashboardMiniRoutineList({navigation}) {
+  const userSession = useSelector(state => {
+    return state.userSessionReducer;
+  });
   const [items, setItems] = React.useState([]);
 
   async function loadRoutines() {
-    idUser = '640dde39e1c25aac9c6a60af';
-    await readRoutineMiniListService(idUser)
+    await readRoutineMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
           return responseRead.json();
