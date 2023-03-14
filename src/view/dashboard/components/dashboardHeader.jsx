@@ -25,7 +25,7 @@ export default function DashboardHeader({navigation}) {
           fontSize: 28,
           fontFamily: 'IBMPlexSansCondensed-Regular',
         }}>
-        Bem-vindo,{' '}
+        Olá,{' '}
         <Text
           style={{
             fontFamily: 'IBMPlexSansCondensed-SemiBold',
