@@ -18,6 +18,7 @@ import {
   readUserService,
   updatePasswordService,
 } from '../../service/userService';
+import {Eye, EyeSlash} from 'phosphor-react-native';
 
 export default function ProfileView({navigation}) {
   const userSession = useSelector(state => {
@@ -30,6 +31,7 @@ export default function ProfileView({navigation}) {
 
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
 
   async function loadUserData() {
     await readUserService(userSession.id)
@@ -253,21 +255,36 @@ export default function ProfileView({navigation}) {
                 }}>
                 Nova senha
               </Text>
-              <TextInput
+              <View
                 style={{
+                  display: 'flex',
+                  flexDirection: 'row',
                   backgroundColor: '#1e1e1e',
                   borderRadius: 4,
                   padding: 8,
-                  width: '100%',
-                  fontFamily: 'IBMPlexSansCondensed-Medium',
-                  color: '#fff',
-                  fontSize: 18,
-                }}
-                placeholder={'Nova senha'}
-                secureTextEntry={true}
-                defaultValue={newPassword}
-                onChangeText={text => setNewPassword(text)}
-              />
+                }}>
+                <TextInput
+                  style={{
+                    flex: 1,
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                    padding: 0,
+                  }}
+                  keyboardType={'default'}
+                  secureTextEntry={showPassword ? false : true}
+                  placeholder={'Nova senha'}
+                  defaultValue={newPassword}
+                  onChangeText={text => setNewPassword(text)}
+                />
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <Eye weight="bold" color="#fff" />
+                  ) : (
+                    <EyeSlash weight="bold" color="#fff" />
+                  )}
+                </Pressable>
+              </View>
             </View>
             <View style={{display: 'flex', flexDirection: 'column', gap: 8}}>
               <Text
@@ -278,21 +295,36 @@ export default function ProfileView({navigation}) {
                 }}>
                 Confirmar nova senha
               </Text>
-              <TextInput
+              <View
                 style={{
+                  display: 'flex',
+                  flexDirection: 'row',
                   backgroundColor: '#1e1e1e',
                   borderRadius: 4,
                   padding: 8,
-                  width: '100%',
-                  fontFamily: 'IBMPlexSansCondensed-Medium',
-                  color: '#fff',
-                  fontSize: 18,
-                }}
-                placeholder={'Confirmar nova senha'}
-                secureTextEntry={true}
-                defaultValue={confirmNewPassword}
-                onChangeText={text => setConfirmNewPassword(text)}
-              />
+                }}>
+                <TextInput
+                  style={{
+                    flex: 1,
+                    fontFamily: 'IBMPlexSansCondensed-Medium',
+                    color: '#fff',
+                    fontSize: 18,
+                    padding: 0,
+                  }}
+                  placeholder={'Confirmar nova senha'}
+                  keyboardType={'default'}
+                  secureTextEntry={showPassword ? false : true}
+                  defaultValue={confirmNewPassword}
+                  onChangeText={text => setConfirmNewPassword(text)}
+                />
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <Eye weight="bold" color="#fff" />
+                  ) : (
+                    <EyeSlash weight="bold" color="#fff" />
+                  )}
+                </Pressable>
+              </View>
             </View>
             <Pressable
               onPress={() => updatePassword()}

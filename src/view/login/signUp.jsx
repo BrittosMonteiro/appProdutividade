@@ -1,3 +1,4 @@
+import {Eye, EyeSlash} from 'phosphor-react-native';
 import * as React from 'react';
 import {
   ActivityIndicator,
@@ -17,6 +18,7 @@ export default function SignUp({navigation}) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
   async function handleSignIn() {
@@ -154,40 +156,72 @@ export default function SignUp({navigation}) {
             defaultValue={username}
             onChangeText={text => setUsername(text)}
           />
-          <TextInput
+          <View
             style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
               backgroundColor: '#1e1e1e',
               borderColor: '#fff',
               borderWidth: 1,
               borderRadius: 4,
               padding: 8,
-              width: '100%',
-              fontFamily: 'IBMPlexSansCondensed-Medium',
-              color: '#fff',
-              fontSize: 18,
-            }}
-            placeholder={'Senha'}
-            secureTextEntry={true}
-            defaultValue={password}
-            onChangeText={text => setPassword(text)}
-          />
-          <TextInput
+            }}>
+            <TextInput
+              style={{
+                flex: 1,
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: '#fff',
+                fontSize: 18,
+                padding: 0,
+              }}
+              placeholder={'Senha'}
+              keyboardType={'default'}
+              secureTextEntry={showPassword ? false : true}
+              defaultValue={password}
+              onChangeText={text => setPassword(text)}
+            />
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Eye weight="bold" color="#fff" />
+              ) : (
+                <EyeSlash weight="bold" color="#fff" />
+              )}
+            </Pressable>
+          </View>
+          <View
             style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
               backgroundColor: '#1e1e1e',
               borderColor: '#fff',
               borderWidth: 1,
               borderRadius: 4,
               padding: 8,
-              width: '100%',
-              fontFamily: 'IBMPlexSansCondensed-Medium',
-              color: '#fff',
-              fontSize: 18,
-            }}
-            placeholder={'Confirmar senha'}
-            secureTextEntry={true}
-            defaultValue={confirmPassword}
-            onChangeText={text => setConfirmPassword(text)}
-          />
+            }}>
+            <TextInput
+              style={{
+                flex: 1,
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: '#fff',
+                fontSize: 18,
+                padding: 0,
+              }}
+              placeholder={'Confirmar senha'}
+              keyboardType={'default'}
+              secureTextEntry={showPassword ? false : true}
+              defaultValue={confirmPassword}
+              onChangeText={text => setConfirmPassword(text)}
+            />
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Eye weight="bold" color="#fff" />
+              ) : (
+                <EyeSlash weight="bold" color="#fff" />
+              )}
+            </Pressable>
+          </View>
           <Pressable
             onPress={() => handleSignIn()}
             style={{

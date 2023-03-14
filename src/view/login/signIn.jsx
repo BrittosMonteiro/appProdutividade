@@ -12,11 +12,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
 import {setUser} from '../../store/action/loginAction';
+import {Eye, EyeSlash} from 'phosphor-react-native';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const setUserData = async data => {
@@ -134,24 +136,40 @@ export default function SignIn({navigation}) {
             onChangeText={text => setUsername(text)}
             editable={!isLoading}
           />
-          <TextInput
+          <View
             style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
               backgroundColor: '#1e1e1e',
               borderColor: '#fff',
               borderWidth: 1,
               borderRadius: 4,
               padding: 8,
-              width: '100%',
-              fontFamily: 'IBMPlexSansCondensed-Medium',
-              color: '#fff',
-              fontSize: 18,
-            }}
-            placeholder={'Senha'}
-            secureTextEntry={true}
-            defaultValue={password}
-            onChangeText={text => setPassword(text)}
-            editable={!isLoading}
-          />
+            }}>
+            <TextInput
+              style={{
+                flex: 1,
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: '#fff',
+                fontSize: 18,
+                padding: 0,
+              }}
+              placeholder={'Senha'}
+              keyboardType={'default'}
+              secureTextEntry={showPassword ? false : true}
+              defaultValue={password}
+              onChangeText={text => setPassword(text)}
+              editable={!isLoading}
+            />
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Eye weight="bold" color="#fff" />
+              ) : (
+                <EyeSlash weight="bold" color="#fff" />
+              )}
+            </Pressable>
+          </View>
           <Pressable
             onPress={() => handleLogin()}
             style={{
