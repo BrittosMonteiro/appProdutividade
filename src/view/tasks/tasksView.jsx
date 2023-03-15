@@ -14,13 +14,17 @@ import Header from '../../components/Header';
 import {readTaskListService} from '../../service/taskService';
 import TemplateScreen from '../templateScreen';
 import TasksListItem from './components/tasksListItem';
+import Tabs from '../../components/Tabs';
+import HorizontalRule from '../../components/HorizontalRule';
 
 export default function TasksView({navigation}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
+  const [originalList, setOriginalList] = React.useState([]);
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [currentTab, setCurrentTab] = React.useState(0);
 
   async function loadTasks() {
     setIsLoading(true);
@@ -31,12 +35,36 @@ export default function TasksView({navigation}) {
         }
       })
       .then(response => {
+        setOriginalList(response.data);
         setItemsList(response.data);
       })
       .catch(err => {})
       .finally(() => {
         setIsLoading(false);
       });
+  }
+
+  function changeTab(index) {
+    setCurrentTab(index);
+    filterItems(index);
+  }
+
+  function filterItems(index) {
+    let newList = [];
+
+    switch (index) {
+      case 1:
+        newList = originalList.filter(e => e.status === false);
+        break;
+      case 2:
+        newList = originalList.filter(e => e.status === true);
+        break;
+      default:
+        newList = originalList;
+        break;
+    }
+
+    setItemsList(newList);
   }
 
   React.useEffect(() => {
@@ -60,21 +88,24 @@ export default function TasksView({navigation}) {
           height: '100%',
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-          paddingVertical: 16,
+          padding: 16,
           gap: 16,
         }}>
+        {originalList.length > 0 && (
+          <Tabs changeTab={changeTab} selected={currentTab} />
+        )}
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
-            paddingHorizontal: 16,
           }}>
           <Pressable
             onPress={() => navigation.navigate('TaskItemView', {item: null})}
             style={{
               display: 'flex',
               flexDirection: 'row',
-              padding: 8,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
               backgroundColor: '#108FD8',
               borderRadius: 4,
               justifyContent: 'space-between',
@@ -90,23 +121,28 @@ export default function TasksView({navigation}) {
             <CaretRight weight="bold" size={24} color={'#fff'} />
           </Pressable>
         </View>
-        <ScrollView
-          contentContainerStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-            paddingHorizontal: 16,
-          }}>
+        <ScrollView>
           {itemsList.length > 0 ? (
-            <>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: '#fff',
+                borderRadius: 4,
+                gap: 8,
+                padding: 12,
+              }}>
               {itemsList.map((item, index) => (
-                <TasksListItem
-                  item={item}
-                  navigation={navigation}
-                  key={index}
-                />
+                <React.Fragment key={index}>
+                  <TasksListItem
+                    item={item}
+                    navigation={navigation}
+                    refresh={loadTasks}
+                  />
+                  {index < itemsList.length - 1 && <HorizontalRule />}
+                </React.Fragment>
               ))}
-            </>
+            </View>
           ) : (
             <>
               {isLoading ? (

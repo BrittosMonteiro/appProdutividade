@@ -78,7 +78,7 @@ export default function DashboardMiniTaskList({navigation}) {
                 <EmptyMessage message={'BUSCANDO TAREFAS'} />
               </View>
             ) : (
-              <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+              <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS PENDENTES'} />
             )}
           </>
         )}

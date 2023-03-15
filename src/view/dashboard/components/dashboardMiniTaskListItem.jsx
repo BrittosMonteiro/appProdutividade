@@ -42,7 +42,7 @@ export default function DashboardMiniTaskListItem({item, navigation}) {
             fontFamily: 'IBMPlexSansCondensed-Regular',
           }}
           numberOfLines={2}>
-          {item.description}
+          {item.description ? item.description : 'Sem descrição'}
         </Text>
       </View>
     </Pressable>

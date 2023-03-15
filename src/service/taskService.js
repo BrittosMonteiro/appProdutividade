@@ -28,6 +28,14 @@ export async function updateTaskService(data) {
   });
 }
 
+export async function updateTaskStatusService(data) {
+  return await fetch(`${API_URL}/tasks/updateStatus`, {
+    method: 'PUT',
+    headers: {'Content-type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+}
+
 export async function deleteTaskService(idTask) {
   return await fetch(`${API_URL}/tasks/delete`, {
     method: 'DELETE',
