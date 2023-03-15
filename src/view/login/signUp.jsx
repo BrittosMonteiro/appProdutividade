@@ -1,4 +1,3 @@
-import {Eye, EyeSlash} from 'phosphor-react-native';
 import * as React from 'react';
 import {
   ActivityIndicator,
@@ -7,11 +6,16 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {createUserService} from '../../service/loginService';
+import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Eye, EyeSlash} from 'phosphor-react-native';
 
+import {createUserService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
+import {setUser} from '../../store/action/loginAction';
 
 export default function SignUp({navigation}) {
+  const dispatch = useDispatch();
   const [name, setName] = React.useState('');
   const [surname, setSurname] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -21,7 +25,16 @@ export default function SignUp({navigation}) {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  async function handleSignIn() {
+  const setUserData = async data => {
+    try {
+      const jsonData = JSON.stringify(data);
+      await AsyncStorage.setItem('userData', jsonData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  async function handleSignUp() {
     setIsLoading(true);
     if (!name || !username || !email || !password || !confirmPassword) {
       console.log('Preencher form');
@@ -50,7 +63,12 @@ export default function SignUp({navigation}) {
         }
       })
       .then(response => {
-        navigation.navigate('DashboardView');
+        dispatch(setUser(response.data));
+        setUserData(response.data);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'DashboardView'}],
+        });
       })
       .catch(err => {
         console.log(err);
@@ -223,7 +241,7 @@ export default function SignUp({navigation}) {
             </Pressable>
           </View>
           <Pressable
-            onPress={() => handleSignIn()}
+            onPress={() => handleSignUp()}
             style={{
               width: '100%',
               backgroundColor: 'rgb(235, 87, 87)',

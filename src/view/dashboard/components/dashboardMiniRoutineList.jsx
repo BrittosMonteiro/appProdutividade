@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import EmptyMessage from '../../../components/EmptyMessage';
@@ -13,8 +13,10 @@ export default function DashboardMiniRoutineList({navigation}) {
     return state.userSessionReducer;
   });
   const [items, setItems] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   async function loadRoutines() {
+    setIsLoading(true);
     await readRoutineMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -24,7 +26,10 @@ export default function DashboardMiniRoutineList({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {});
+      .catch(err => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   React.useEffect(() => {
@@ -63,14 +68,23 @@ export default function DashboardMiniRoutineList({navigation}) {
             ))}
           </>
         ) : (
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-            }}>
-            <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
-          </View>
+          <>
+            {isLoading ? (
+              <View style={{display: 'flex', flexDirection: 'row', gap: 8}}>
+                <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                <EmptyMessage message={'BUSCANDO ATIVIDADES'} />
+              </View>
+            ) : (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                }}>
+                <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
+              </View>
+            )}
+          </>
         )}
       </View>
     </View>

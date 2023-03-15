@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Pressable, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import {CaretRight} from 'phosphor-react-native';
 import {useSelector} from 'react-redux';
 
@@ -18,7 +24,6 @@ export default function TasksView({navigation}) {
 
   async function loadTasks() {
     setIsLoading(true);
-
     await readTaskListService(userSession.id)
       .then(responseRead => {
         if (responseRead) {
@@ -103,7 +108,22 @@ export default function TasksView({navigation}) {
               ))}
             </>
           ) : (
-            <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+            <>
+              {isLoading ? (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 8,
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                  <EmptyMessage message={'BUSCANDO TAREFAS'} />
+                </View>
+              ) : (
+                <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+              )}
+            </>
           )}
         </ScrollView>
       </View>

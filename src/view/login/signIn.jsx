@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Eye, EyeSlash} from 'phosphor-react-native';
 
 import {loginService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
 import {setUser} from '../../store/action/loginAction';
-import {Eye, EyeSlash} from 'phosphor-react-native';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
@@ -72,7 +72,6 @@ export default function SignIn({navigation}) {
       .then(response => {
         dispatch(setUser(response.data));
         setUserData(response.data);
-        // navigation.navigate('DashboardView');
         navigation.reset({
           index: 0,
           routes: [{name: 'DashboardView'}],

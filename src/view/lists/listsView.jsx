@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Pressable, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
@@ -14,6 +20,7 @@ export default function ListsView({navigation}) {
     return state.userSessionReducer;
   });
   const [itemsList, setItemsList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const lists = [
     {
@@ -134,6 +141,7 @@ export default function ListsView({navigation}) {
   ];
 
   async function loadLists() {
+    setIsLoading(true);
     await readListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -143,7 +151,10 @@ export default function ListsView({navigation}) {
       .then(response => {
         setItemsList(response.data);
       })
-      .catch(err => {});
+      .catch(err => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   React.useEffect(() => {
@@ -211,7 +222,22 @@ export default function ListsView({navigation}) {
               ))}
             </>
           ) : (
-            <EmptyMessage message={'VOCÊ NÃO TEM LISTAS'} />
+            <>
+              {isLoading ? (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 8,
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                  <EmptyMessage message={'BUSCANDO LISTAS'} />
+                </View>
+              ) : (
+                <EmptyMessage message={'VOCÊ NÃO TEM LISTAS'} />
+              )}
+            </>
           )}
         </ScrollView>
       </View>

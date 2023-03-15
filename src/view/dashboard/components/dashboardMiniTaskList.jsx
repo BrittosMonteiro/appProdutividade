@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ScrollView, View} from 'react-native';
+import {ActivityIndicator, ScrollView, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import EmptyMessage from '../../../components/EmptyMessage';
@@ -12,8 +12,10 @@ export default function DashboardMiniTaskList({navigation}) {
     return state.userSessionReducer;
   });
   const [items, setItems] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   async function loadTasks() {
+    setIsLoading(true);
     await readTaskMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -23,7 +25,10 @@ export default function DashboardMiniTaskList({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {});
+      .catch(err => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   React.useEffect(() => {
@@ -66,7 +71,16 @@ export default function DashboardMiniTaskList({navigation}) {
             ))}
           </>
         ) : (
-          <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+          <>
+            {isLoading ? (
+              <View style={{display: 'flex', flexDirection: 'row', gap: 8}}>
+                <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                <EmptyMessage message={'BUSCANDO TAREFAS'} />
+              </View>
+            ) : (
+              <EmptyMessage message={'VOCÊ NÃO TEM TAREFAS'} />
+            )}
+          </>
         )}
       </ScrollView>
     </View>

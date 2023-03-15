@@ -1,6 +1,12 @@
 import * as React from 'react';
 import {CaretRight} from 'phosphor-react-native';
-import {Pressable, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import TemplateScreen from '../templateScreen';
@@ -15,8 +21,10 @@ export default function RoutineView({navigation}) {
     return state.userSessionReducer;
   });
   const [items, setItems] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   async function loadRoutines() {
+    setIsLoading(true);
     await readRoutineListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -26,7 +34,10 @@ export default function RoutineView({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {});
+      .catch(err => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   React.useEffect(() => {
@@ -97,7 +108,23 @@ export default function RoutineView({navigation}) {
               ))}
             </>
           ) : (
-            <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
+            // <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
+            <>
+              {isLoading ? (
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 8,
+                    justifyContent: 'center',
+                  }}>
+                  <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                  <EmptyMessage message={'BUSCANDO ATIVIDADES'} />
+                </View>
+              ) : (
+                <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
+              )}
+            </>
           )}
         </ScrollView>
       </View>
