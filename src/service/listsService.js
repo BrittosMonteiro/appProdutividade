@@ -28,6 +28,14 @@ export async function updateListService(data) {
   });
 }
 
+export async function updateListStatusService(data) {
+  return await fetch(`${API_URL}/lists/updateStatus`, {
+    method: 'PUT',
+    headers: {'Content-type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+}
+
 export async function deleteListService(idList) {
   return await fetch(`${API_URL}/lists/delete`, {
     method: 'DELETE',

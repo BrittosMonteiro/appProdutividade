@@ -14,131 +14,17 @@ import ListItem from './components/listItem';
 import EmptyMessage from '../../components/EmptyMessage';
 import {CaretRight} from 'phosphor-react-native';
 import {readListService} from '../../service/listsService';
+import Tabs from '../../components/Tabs';
+import HorizontalRule from '../../components/HorizontalRule';
 
 export default function ListsView({navigation}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
+  const [originalList, setOriginalList] = React.useState([]);
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const lists = [
-    {
-      done: '4',
-      items: [
-        {
-          title: 'Pão integral Wickbold',
-          status: true,
-        },
-        {
-          title: 'Wrap',
-          status: true,
-        },
-        {
-          title: 'Geléia de morango',
-          status: true,
-        },
-        {
-          title: 'Suco de Uva - Campo largo',
-          status: true,
-        },
-      ],
-      pending: '0',
-      priority: 0,
-      title: 'Supermercado',
-      description: 'Brasil Atacadista',
-    },
-    {
-      done: '2',
-      items: [
-        {
-          title: 'Ovos',
-          status: true,
-        },
-        {
-          title: 'Açucar mascavo',
-          status: true,
-        },
-      ],
-      pending: '0',
-      priority: 1,
-      title: 'Receita bolo de banana',
-    },
-    {
-      done: '2',
-      items: [
-        {
-          title: 'Hospedagens em Berlin',
-          status: true,
-        },
-        {
-          title: 'Hospedagens em München',
-          status: false,
-        },
-        {
-          title: 'Hospedagens em Stuttgart',
-          status: false,
-        },
-        {
-          title: 'Passeios em Berlin',
-          status: true,
-        },
-        {
-          title: 'Passeios em München',
-          status: false,
-        },
-      ],
-      pending: '3',
-      priority: 2,
-      title: 'Viagem Alemanha',
-      description: '15/Out - 02/Nov',
-    },
-    {
-      done: 0,
-      items: [
-        {
-          title: 'Limpar cantinhos',
-          status: false,
-        },
-        {
-          title: 'Tirar teias de aranha',
-          status: false,
-        },
-        {
-          title: 'Limpar janelas (quarto e banheiro)',
-          status: false,
-        },
-        {
-          title: 'Banheiro',
-          status: false,
-        },
-        {
-          title: 'Lavar pote de ração',
-          status: false,
-        },
-        {
-          title: 'Focar no chão',
-          status: false,
-        },
-        {
-          title: 'Limpar rodapé',
-          status: false,
-        },
-        {
-          title: 'Bichinhos no chão',
-          status: false,
-        },
-        {
-          title: 'Formigas',
-          status: false,
-        },
-      ],
-      pending: 0,
-      priority: 2,
-      title: 'Diarista',
-      description: '',
-    },
-  ];
+  const [currentTab, setCurrentTab] = React.useState(0);
 
   async function loadLists() {
     setIsLoading(true);
@@ -149,12 +35,34 @@ export default function ListsView({navigation}) {
         }
       })
       .then(response => {
+        setOriginalList(response.data);
         setItemsList(response.data);
       })
       .catch(err => {})
       .finally(() => {
         setIsLoading(false);
       });
+  }
+
+  function changeTab(index) {
+    setCurrentTab(index);
+    filterItems(index);
+  }
+
+  function filterItems(index) {
+    let filteredList = [];
+    switch (index) {
+      case 1:
+        filteredList = originalList.filter(e => e.status === false);
+        break;
+      case 2:
+        filteredList = originalList.filter(e => e.status === true);
+        break;
+      default:
+        filteredList = originalList;
+        break;
+    }
+    setItemsList(filteredList);
   }
 
   React.useEffect(() => {
@@ -178,21 +86,24 @@ export default function ListsView({navigation}) {
           height: '100%',
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-          paddingVertical: 16,
+          padding: 16,
           gap: 16,
         }}>
+        {originalList.length > 0 && (
+          <Tabs changeTab={changeTab} selected={currentTab} />
+        )}
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
-            paddingHorizontal: 16,
           }}>
           <Pressable
             onPress={() => navigation.navigate('ListItemView', {item: null})}
             style={{
               display: 'flex',
               flexDirection: 'row',
-              padding: 8,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
               backgroundColor: '#108FD8',
               borderRadius: 4,
               justifyContent: 'space-between',
@@ -208,19 +119,28 @@ export default function ListsView({navigation}) {
             <CaretRight weight="bold" size={24} color={'#fff'} />
           </Pressable>
         </View>
-        <ScrollView
-          contentContainerStyle={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-            paddingHorizontal: 16,
-          }}>
+        <ScrollView>
           {itemsList.length > 0 ? (
-            <>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: '#fff',
+                borderRadius: 4,
+                gap: 8,
+                padding: 12,
+              }}>
               {itemsList.map((item, index) => (
-                <ListItem item={item} navigation={navigation} key={index} />
+                <React.Fragment key={index}>
+                  <ListItem
+                    item={item}
+                    navigation={navigation}
+                    refresh={loadLists}
+                  />
+                  {index < itemsList.length - 1 && <HorizontalRule />}
+                </React.Fragment>
               ))}
-            </>
+            </View>
           ) : (
             <>
               {isLoading ? (
