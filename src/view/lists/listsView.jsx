@@ -92,33 +92,35 @@ export default function ListsView({navigation}) {
         {originalList.length > 0 && (
           <Tabs changeTab={changeTab} selected={currentTab} />
         )}
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-          }}>
-          <Pressable
-            onPress={() => navigation.navigate('ListItemView', {item: null})}
+        {!isLoading && (
+          <View
             style={{
               display: 'flex',
               flexDirection: 'row',
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              backgroundColor: '#108FD8',
-              borderRadius: 4,
-              justifyContent: 'space-between',
             }}>
-            <Text
+            <Pressable
+              onPress={() => navigation.navigate('ListItemView', {item: null})}
               style={{
-                color: '#fff',
-                fontFamily: 'IBMPlexSansCondensed-Medium',
-                fontSize: 16,
+                display: 'flex',
+                flexDirection: 'row',
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                backgroundColor: '#108FD8',
+                borderRadius: 4,
+                justifyContent: 'space-between',
               }}>
-              ADICIONAR LISTA
-            </Text>
-            <CaretRight weight="bold" size={24} color={'#fff'} />
-          </Pressable>
-        </View>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'IBMPlexSansCondensed-Medium',
+                  fontSize: 16,
+                }}>
+                ADICIONAR LISTA
+              </Text>
+              <CaretRight weight="bold" size={24} color={'#fff'} />
+            </Pressable>
+          </View>
+        )}
         <ScrollView>
           {itemsList.length > 0 ? (
             <View

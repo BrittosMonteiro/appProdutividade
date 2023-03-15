@@ -73,7 +73,7 @@ export default function ListItem({navigation, item, refresh}) {
             }}>
             {item.items.length > 0 &&
             item.items.every(e => e.status === true) ? (
-              <>
+              <View style={{display: 'flex', flexDirection: 'row', gap: 4}}>
                 <CheckCircle size={18} weight="fill" color="green" />
                 <Text
                   style={{
@@ -83,7 +83,7 @@ export default function ListItem({navigation, item, refresh}) {
                   }}>
                   100% concluído
                 </Text>
-              </>
+              </View>
             ) : (
               <Text
                 style={{
