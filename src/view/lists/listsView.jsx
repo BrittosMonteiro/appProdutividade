@@ -16,6 +16,7 @@ import {CaretRight} from 'phosphor-react-native';
 import {readListService} from '../../service/listsService';
 import Tabs from '../../components/Tabs';
 import HorizontalRule from '../../components/HorizontalRule';
+import SearchText from '../../components/SearchText';
 
 export default function ListsView({navigation}) {
   const userSession = useSelector(state => {
@@ -65,6 +66,18 @@ export default function ListsView({navigation}) {
     setItemsList(filteredList);
   }
 
+  function filterBySearchText(text) {
+    if (text) {
+      filterItems(currentTab);
+      let filteredListBySearchText = itemsList.filter(e =>
+        e.title.includes(text),
+      );
+      setItemsList(filteredListBySearchText);
+    } else {
+      filterItems(currentTab);
+    }
+  }
+
   React.useEffect(() => {
     loadLists();
   }, []);
@@ -78,6 +91,12 @@ export default function ListsView({navigation}) {
   return (
     <TemplateScreen>
       <Header navigation={navigation} title={'LISTAS'} />
+      {originalList.length > 0 && (
+        <>
+          <Tabs changeTab={changeTab} selected={currentTab} />
+          <SearchText filterText={filterBySearchText} />
+        </>
+      )}
       <View
         style={{
           display: 'flex',
@@ -89,9 +108,6 @@ export default function ListsView({navigation}) {
           padding: 16,
           gap: 16,
         }}>
-        {originalList.length > 0 && (
-          <Tabs changeTab={changeTab} selected={currentTab} />
-        )}
         {!isLoading && (
           <View
             style={{

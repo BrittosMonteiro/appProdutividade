@@ -16,6 +16,7 @@ import TemplateScreen from '../templateScreen';
 import TasksListItem from './components/tasksListItem';
 import Tabs from '../../components/Tabs';
 import HorizontalRule from '../../components/HorizontalRule';
+import SearchText from '../../components/SearchText';
 
 export default function TasksView({navigation}) {
   const userSession = useSelector(state => {
@@ -25,6 +26,7 @@ export default function TasksView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentTab, setCurrentTab] = React.useState(0);
+  const [searchText, setSearchText] = React.useState('');
 
   async function loadTasks() {
     setIsLoading(true);
@@ -67,6 +69,18 @@ export default function TasksView({navigation}) {
     setItemsList(newList);
   }
 
+  function filterBySearchText(text) {
+    if (text) {
+      filterItems(currentTab);
+      let filteredListBySearchText = itemsList.filter(e =>
+        e.title.includes(text),
+      );
+      setItemsList(filteredListBySearchText);
+    } else {
+      filterItems(currentTab);
+    }
+  }
+
   React.useEffect(() => {
     loadTasks();
   }, []);
@@ -80,6 +94,12 @@ export default function TasksView({navigation}) {
   return (
     <TemplateScreen>
       <Header navigation={navigation} title={'TAREFAS'} />
+      {originalList.length > 0 && (
+        <>
+          <Tabs changeTab={changeTab} selected={currentTab} />
+          <SearchText filterText={filterBySearchText} />
+        </>
+      )}
       <View
         style={{
           display: 'flex',
@@ -91,9 +111,6 @@ export default function TasksView({navigation}) {
           padding: 16,
           gap: 16,
         }}>
-        {originalList.length > 0 && (
-          <Tabs changeTab={changeTab} selected={currentTab} />
-        )}
         {!isLoading && (
           <View
             style={{

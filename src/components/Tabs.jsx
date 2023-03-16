@@ -15,44 +15,43 @@ export default function Tabs({changeTab, selected}) {
   ];
 
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: '#111637',
-        borderRadius: 16,
-        padding: 4,
-      }}>
-      {tabs.map((tab, index) => (
-        <Pressable
-          onPress={() => changeTab(index)}
-          key={index}
-          style={[
-            index === selected && {backgroundColor: '#fff'},
-            {
-              flex: 1,
-              padding: 8,
-              justifyContent: 'center',
-              borderRadius: 12,
-            },
-          ]}>
-          <Text
+    <View style={{paddingHorizontal: 16}}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+        {tabs.map((tab, index) => (
+          <Pressable
+            onPress={() => changeTab(index)}
+            key={index}
             style={[
-              index === selected
-                ? {
-                    color: '#111637',
-                    fontFamily: 'IBMPlexSansCondensed-SemiBold',
-                  }
-                : {fontFamily: 'IBMPlexSansCondensed-Regular'},
+              index === selected && {backgroundColor: '#fff'},
               {
-                fontSize: 18,
-                textAlign: 'center',
+                flex: 1,
+                padding: 8,
+                justifyContent: 'center',
+                borderRadius: 16,
               },
             ]}>
-            {tab.title}
-          </Text>
-        </Pressable>
-      ))}
+            <Text
+              style={[
+                index === selected
+                  ? {
+                      color: '#111637',
+                      fontFamily: 'IBMPlexSansCondensed-SemiBold',
+                    }
+                  : {fontFamily: 'IBMPlexSansCondensed-Regular'},
+                {
+                  fontSize: 18,
+                  textAlign: 'center',
+                },
+              ]}>
+              {tab.title}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
     </View>
   );
 }

@@ -15,11 +15,13 @@ import RoutineListItem from './components/routineListItem';
 import EmptyMessage from '../../components/EmptyMessage';
 import {readRoutineListService} from '../../service/routineService';
 import HorizontalRule from '../../components/HorizontalRule';
+import SearchText from '../../components/SearchText';
 
 export default function RoutineView({navigation}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
+  const [originalList, setOriginalList] = React.useState([]);
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -32,12 +34,22 @@ export default function RoutineView({navigation}) {
         }
       })
       .then(response => {
+        setOriginalList(response.data);
         setItems(response.data);
       })
       .catch(err => {})
       .finally(() => {
         setIsLoading(false);
       });
+  }
+
+  function filterBySearchText(text) {
+    if (text) {
+      let filteredListBySearchText = items.filter(e => e.title.includes(text));
+      setItems(filteredListBySearchText);
+    } else {
+      setItems(originalList);
+    }
   }
 
   React.useEffect(() => {
@@ -53,6 +65,7 @@ export default function RoutineView({navigation}) {
   return (
     <TemplateScreen>
       <Header navigation={navigation} title={'ROTINEIRAS'} />
+      {items.length > 0 && <SearchText filterText={filterBySearchText} />}
       <View
         style={{
           display: 'flex',
@@ -108,7 +121,6 @@ export default function RoutineView({navigation}) {
               ))}
             </>
           ) : (
-            // <EmptyMessage message={'VOCÊ NÃO TEM ATIVIDADES'} />
             <>
               {isLoading ? (
                 <View
