@@ -2,7 +2,7 @@ import {Pressable, Text, View} from 'react-native';
 import {
   CheckCircle,
   CheckSquare,
-  RadioButton,
+  BookmarkSimple,
   Square,
 } from 'phosphor-react-native';
 
@@ -99,7 +99,7 @@ export default function ListItem({navigation, item, refresh}) {
           </View>
         </Pressable>
       </View>
-      <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
+      <BookmarkSimple color={`rgb(${priority[item.priority]})`} weight="fill" />
     </View>
   );
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Pressable, Text, View} from 'react-native';
 
-import {CheckSquare, RadioButton, Square} from 'phosphor-react-native';
+import {CheckSquare, BookmarkSimple, Square} from 'phosphor-react-native';
 import {updateTaskStatusService} from '../../../service/taskService';
 
 export default function TasksListItem({navigation, item, refresh}) {
@@ -77,7 +77,7 @@ export default function TasksListItem({navigation, item, refresh}) {
             </Text>
           </Pressable>
         </View>
-        <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
+        <BookmarkSimple color={`rgb(${priority[item.priority]})`} weight="fill" />
       </View>
     </View>
   );

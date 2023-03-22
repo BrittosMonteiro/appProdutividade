@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
-import {Circle, RadioButton} from 'phosphor-react-native';
+import {BookmarkSimple} from 'phosphor-react-native';
 import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
@@ -183,14 +183,14 @@ export default function TaskItemView({route, navigation}) {
                   }}
                   key={index}>
                   {priority === index ? (
-                    <RadioButton
+                    <BookmarkSimple
                       weight="fill"
                       size={28}
                       style={{margin: 0, padding: 0, backgroundColor: ''}}
                       color={`rgb(${item.color})`}
                     />
                   ) : (
-                    <Circle
+                    <BookmarkSimple
                       weight="bold"
                       size={28}
                       style={{margin: 0, padding: 0, backgroundColor: ''}}

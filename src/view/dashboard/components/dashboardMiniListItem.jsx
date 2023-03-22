@@ -1,5 +1,5 @@
 import {Pressable, Text, View} from 'react-native';
-import {RadioButton} from 'phosphor-react-native';
+import {BookmarkSimple} from 'phosphor-react-native';
 
 export default function DashboardMiniListItem({item, navigation}) {
   const priority = ['39, 174, 96', '255, 122, 0', '235, 87, 87'];
@@ -27,7 +27,7 @@ export default function DashboardMiniListItem({item, navigation}) {
           }}>
           {item.title}
         </Text>
-        <RadioButton color={`rgb(${priority[item.priority]})`} weight="fill" />
+        <BookmarkSimple color={`rgb(${priority[item.priority]})`} weight="fill" />
       </View>
       <View
         style={{
