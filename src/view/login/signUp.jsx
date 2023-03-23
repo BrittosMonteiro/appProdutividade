@@ -13,6 +13,7 @@ import {Eye, EyeSlash} from 'phosphor-react-native';
 import {createUserService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
 import {setUser} from '../../store/action/loginAction';
+import ModalError from '../../components/ModalError';
 
 export default function SignUp({navigation}) {
   const dispatch = useDispatch();
@@ -24,26 +25,34 @@ export default function SignUp({navigation}) {
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [titleError, setTitleError] = React.useState('ERRO');
+  const [messageError, setMessageError] = React.useState('');
 
   const setUserData = async data => {
     try {
       const jsonData = JSON.stringify(data);
       await AsyncStorage.setItem('userData', jsonData);
     } catch (err) {
-      console.log(err);
+      setMessageError('Não foi possível armazenar os dados do login.');
+      setOpenModal(true);
     }
   };
 
   async function handleSignUp() {
     setIsLoading(true);
     if (!name || !username || !email || !password || !confirmPassword) {
-      console.log('Preencher form');
+      setTitleError('DADOS INCORRETOS');
+      setMessageError('Preencha os campos corretamente');
+      setOpenModal(true);
       setIsLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      console.log('Senhas não são iguais');
+      setTitleError('SENHAS INCOMPATÍVEIS');
+      setMessageError('As senhas precisam ser iguais');
+      setOpenModal(true);
       setIsLoading(false);
       return;
     }
@@ -63,19 +72,29 @@ export default function SignUp({navigation}) {
         }
       })
       .then(response => {
-        dispatch(setUser(response.data));
-        setUserData(response.data);
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'DashboardView'}],
-        });
+        if (response?.data) {
+          dispatch(setUser(response.data));
+          setUserData(response.data);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'DashboardView'}],
+          });
+        } else {
+          setMessageError(response.message);
+          setOpenModal(true);
+        }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
+        setMessageError('Serviço indisponível. Tente novamente mais tarde');
+        setOpenModal(true);
       })
       .finally(() => {
         setIsLoading(false);
       });
+  }
+
+  function closeModal() {
+    setOpenModal(false);
   }
 
   return (
@@ -281,6 +300,12 @@ export default function SignUp({navigation}) {
           </Text>
         </Pressable>
       </View>
+      <ModalError
+        message={messageError}
+        onClose={closeModal}
+        open={openModal}
+        title={titleError}
+      />
     </TemplateScreen>
   );
 }

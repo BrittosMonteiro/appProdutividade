@@ -13,6 +13,7 @@ import {Eye, EyeSlash} from 'phosphor-react-native';
 import {loginService} from '../../service/loginService';
 import TemplateScreen from '../templateScreen';
 import {setUser} from '../../store/action/loginAction';
+import ModalError from '../../components/ModalError';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
@@ -20,13 +21,17 @@ export default function SignIn({navigation}) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [titleError, setTitleError] = useState('ERRO');
+  const [messageError, setMessageError] = useState('');
 
   const setUserData = async data => {
     try {
       const jsonData = JSON.stringify(data);
       await AsyncStorage.setItem('userData', jsonData);
     } catch (err) {
-      console.log(err);
+      setMessageError('Não foi possível armazenar os dados do login.');
+      setOpenModal(true);
     }
   };
 
@@ -46,7 +51,6 @@ export default function SignIn({navigation}) {
       }
       setIsLoading(false);
     } catch (err) {
-      console.error(err);
       setIsLoading(false);
     }
   };
@@ -54,6 +58,9 @@ export default function SignIn({navigation}) {
   async function handleLogin() {
     setIsLoading(true);
     if (!username || !password) {
+      setTitleError('DADOS INCORRETOS');
+      setMessageError('Preencha os campos corretamente');
+      setOpenModal(true);
       setIsLoading(false);
       return;
     }
@@ -65,20 +72,24 @@ export default function SignIn({navigation}) {
 
     await loginService(userValidate)
       .then(responseLogin => {
-        if (responseLogin.status === 200) {
-          return responseLogin.json();
-        }
+        return responseLogin.json();
       })
       .then(response => {
-        dispatch(setUser(response.data));
-        setUserData(response.data);
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'DashboardView'}],
-        });
+        if (response?.data) {
+          dispatch(setUser(response.data));
+          setUserData(response.data);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'DashboardView'}],
+          });
+        } else {
+          setMessageError(response.message);
+          setOpenModal(true);
+        }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
+        setMessageError('Serviço indisponível. Tente novamente mais tarde');
+        setOpenModal(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -88,6 +99,10 @@ export default function SignIn({navigation}) {
   useEffect(() => {
     getUserData();
   }, []);
+
+  function closeModal() {
+    setOpenModal(false);
+  }
 
   return (
     <TemplateScreen>
@@ -210,6 +225,12 @@ export default function SignIn({navigation}) {
           </Text>
         </Pressable>
       </View>
+      <ModalError
+        title={titleError}
+        message={messageError}
+        onClose={closeModal}
+        open={openModal}
+      />
     </TemplateScreen>
   );
 }
