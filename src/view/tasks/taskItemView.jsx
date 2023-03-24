@@ -11,6 +11,7 @@ import {
   updateTaskService,
 } from '../../service/taskService';
 import TemplateScreen from '../templateScreen';
+import ModalLoading from '../../components/ModalLoading';
 
 export default function TaskItemView({route, navigation}) {
   const userSession = useSelector(state => {
@@ -21,6 +22,7 @@ export default function TaskItemView({route, navigation}) {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [priority, setPriority] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const priorityLevel = [
     {
@@ -38,6 +40,7 @@ export default function TaskItemView({route, navigation}) {
   ];
 
   async function createTask() {
+    setIsLoading(true);
     const task = {
       title,
       description,
@@ -51,10 +54,14 @@ export default function TaskItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function loadTask() {
+    setIsLoading(true);
     await readTaskService(idTask)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -66,10 +73,15 @@ export default function TaskItemView({route, navigation}) {
         setTitle(response.data.title);
         setDescription(response.data.description);
         setPriority(response.data.priority);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
   async function updateTask() {
+    setIsLoading(true);
     const data = {
       idTask,
       task: {
@@ -85,11 +97,16 @@ export default function TaskItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function deleteTask() {
+    setIsLoading(true);
     if (!id) {
+      setIsLoading(false);
       return;
     }
 
@@ -99,7 +116,10 @@ export default function TaskItemView({route, navigation}) {
           navigation.goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function goBack() {
@@ -333,6 +353,7 @@ export default function TaskItemView({route, navigation}) {
           )}
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }

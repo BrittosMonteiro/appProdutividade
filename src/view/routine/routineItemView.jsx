@@ -3,6 +3,7 @@ import {Pressable, ScrollView, Text, TextInput, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import Header from '../../components/Header';
+import ModalLoading from '../../components/ModalLoading';
 import {
   createRoutineService,
   deleteRoutineService,
@@ -19,8 +20,10 @@ export default function RoutineItemView({route, navigation}) {
   const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
 
   async function createRoutine() {
+    setIsLoading(true);
     const routine = {
       title,
       description,
@@ -33,10 +36,14 @@ export default function RoutineItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function loadRoutine() {
+    setIsLoading(true);
     await readRoutineService(idActivity)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -47,10 +54,15 @@ export default function RoutineItemView({route, navigation}) {
         setId(response.data.id);
         setTitle(response.data.title);
         setDescription(response.data.description);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
   async function updateRoutine() {
+    setIsLoading(true);
     const data = {
       idRoutine: id,
       routine: {
@@ -66,11 +78,16 @@ export default function RoutineItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function deleteRoutine() {
+    setIsLoading(true);
     if (!idActivity || !id) {
+      setIsLoading(false);
       return;
     }
     await deleteRoutineService({idRoutine: id})
@@ -79,7 +96,10 @@ export default function RoutineItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   React.useEffect(() => {
@@ -259,6 +279,7 @@ export default function RoutineItemView({route, navigation}) {
           )}
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }
