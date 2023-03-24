@@ -34,7 +34,7 @@ export default function TasksView({navigation}) {
         setOriginalList(response.data);
         setItemsList(response.data);
       })
-      .catch(err => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
