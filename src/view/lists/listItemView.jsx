@@ -7,23 +7,20 @@ import {
   Square,
   Trash,
 } from 'phosphor-react-native';
-import {useSelector} from 'react-redux';
 
+import TemplateScreen from '../templateScreen';
 import Header from '../../components/Header';
 import HorizontalRule from '../../components/HorizontalRule';
-import TemplateScreen from '../templateScreen';
 import ManageItemFromCheckList from './components/manageItemFromCheckList';
+import ModalLoading from '../../components/ModalLoading';
+
 import {
-  createListService,
   deleteListService,
   readItemListService,
   updateListService,
 } from '../../service/listsService';
 
 export default function ListItemView({route, navigation}) {
-  const userSession = useSelector(state => {
-    return state.userSessionReducer;
-  });
   const {idList} = route.params;
   const [id, setId] = React.useState(null);
   const [title, setTitle] = React.useState('');
@@ -31,6 +28,7 @@ export default function ListItemView({route, navigation}) {
   const [priority, setPriority] = React.useState(null);
   const [items, setItems] = React.useState([]);
   const [openModal, setOpenModal] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const priorityLevel = [
     {
@@ -47,25 +45,8 @@ export default function ListItemView({route, navigation}) {
     },
   ];
 
-  async function createList() {
-    const list = {
-      title,
-      description,
-      priority,
-      item: items,
-      idUser: userSession.id,
-    };
-
-    await createListService(list)
-      .then(responseCreate => {
-        if (responseCreate.status === 201) {
-          goBack();
-        }
-      })
-      .catch(err => {});
-  }
-
   async function loadList() {
+    setIsLoading(true);
     await readItemListService(idList)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -79,10 +60,14 @@ export default function ListItemView({route, navigation}) {
         setItems(response.data.items);
         setDescription(response.data.description);
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function updateList(refresh) {
+    setIsLoading(true);
     const list = {
       idList,
       list: {
@@ -104,11 +89,16 @@ export default function ListItemView({route, navigation}) {
           }
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function deleteList() {
+    setIsLoading(true);
     if (!idList || !id) {
+      setIsLoading(false);
       return;
     }
 
@@ -118,7 +108,10 @@ export default function ListItemView({route, navigation}) {
           goBack();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function goBack() {
@@ -282,9 +275,7 @@ export default function ListItemView({route, navigation}) {
               <Pressable
                 onPress={() => setOpenModal(true)}
                 style={{
-                  backgroundColor: `rgb(${
-                    priorityLevel[priority]?.color || '255, 255, 255'
-                  })`,
+                  backgroundColor: `rgb(${priorityLevel[priority]?.color})`,
                   padding: 4,
                   borderRadius: 50,
                 }}>
@@ -391,101 +382,52 @@ export default function ListItemView({route, navigation}) {
               multiline={true}
             />
           </View>
+          <Pressable
+            onPress={() => updateList(false)}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              paddingVertical: 12,
+              backgroundColor: 'rgb(39, 174, 96)',
+              borderRadius: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: '#fff',
+                fontSize: 18,
+              }}>
+              ATUALIZAR
+            </Text>
+          </Pressable>
 
-          {id ? (
-            <>
-              <Pressable
-                onPress={() => updateList(false)}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingVertical: 12,
-                  backgroundColor: 'rgb(39, 174, 96)',
-                  borderRadius: 4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: 'IBMPlexSansCondensed-Medium',
-                    color: '#fff',
-                    fontSize: 18,
-                  }}>
-                  ATUALIZAR
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => deleteList()}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingVertical: 12,
-                  backgroundColor: '#1e1e1e',
-                  borderColor: 'rgb(235, 87, 87)',
-                  borderWidth: 2,
-                  borderRadius: 4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: 'IBMPlexSansCondensed-Medium',
-                    color: 'rgb(235, 87, 87)',
-                    fontSize: 18,
-                  }}>
-                  EXCLUIR LISTA
-                </Text>
-              </Pressable>
-            </>
-          ) : (
-            <>
-              <Pressable
-                onPress={() => createList()}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingVertical: 12,
-                  backgroundColor: 'rgb(39, 174, 96)',
-                  borderRadius: 4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: 'IBMPlexSansCondensed-Medium',
-                    color: '#fff',
-                    fontSize: 18,
-                  }}>
-                  CRIAR
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => goBack()}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingVertical: 12,
-                  backgroundColor: '#1e1e1e',
-                  borderColor: 'rgb(235, 87, 87)',
-                  borderWidth: 2,
-                  borderRadius: 4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: 'IBMPlexSansCondensed-Medium',
-                    color: 'rgb(235, 87, 87)',
-                    fontSize: 18,
-                  }}>
-                  CANCELAR
-                </Text>
-              </Pressable>
-            </>
-          )}
+          <Pressable
+            onPress={() => deleteList()}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              paddingVertical: 12,
+              backgroundColor: '#1e1e1e',
+              borderColor: 'rgb(235, 87, 87)',
+              borderWidth: 2,
+              borderRadius: 4,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                fontFamily: 'IBMPlexSansCondensed-Medium',
+                color: 'rgb(235, 87, 87)',
+                fontSize: 18,
+              }}>
+              EXCLUIR LISTA
+            </Text>
+          </Pressable>
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }

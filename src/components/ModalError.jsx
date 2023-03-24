@@ -10,7 +10,7 @@ export default function ModalError({title, message, onClose, open}) {
           justifyContent: 'center',
           alignItems: 'center',
           width: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: 16,
           gap: 24,
         }}>

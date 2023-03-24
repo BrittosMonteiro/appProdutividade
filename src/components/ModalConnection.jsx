@@ -3,7 +3,7 @@ import {Modal, Pressable, Text, View} from 'react-native';
 
 export default function ModalConnection({open, refreshConnection}) {
   return (
-    <Modal animationType="slide" transparent={true} visible={open}>
+    <Modal animationType="fade" transparent={true} visible={open}>
       <View
         style={{
           flex: 1,

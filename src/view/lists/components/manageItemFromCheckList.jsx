@@ -15,13 +15,13 @@ export default function ManageItemFromCheckList({open, onClose, addItem}) {
     setTitle('');
   }
   return (
-    <Modal animationType="slide" transparent={true} visible={open}>
+    <Modal animationType="fade" transparent={true} visible={open}>
       <View
         style={{
           flex: 1,
           justifyContent: 'center',
           width: '100%',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: 16,
         }}>
         <View

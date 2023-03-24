@@ -1,17 +1,20 @@
 import * as React from 'react';
 import {Pressable, ScrollView, Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
+import {CaretRight} from 'phosphor-react-native';
 
-import Header from '../../components/Header';
 import TemplateScreen from '../templateScreen';
+import Header from '../../components/Header';
+import Tabs from '../../components/Tabs';
+import SearchText from '../../components/SearchText';
 import ListItem from './components/listItem';
 import EmptyMessage from '../../components/EmptyMessage';
-import {CaretRight} from 'phosphor-react-native';
-import {readListService} from '../../service/listsService';
-import Tabs from '../../components/Tabs';
 import HorizontalRule from '../../components/HorizontalRule';
-import SearchText from '../../components/SearchText';
+
 import ModalLoading from '../../components/ModalLoading';
+import ModalCreateList from './components/ModalCreateList';
+
+import {readListService} from '../../service/listsService';
 
 export default function ListsView({navigation}) {
   const userSession = useSelector(state => {
@@ -21,6 +24,7 @@ export default function ListsView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentTab, setCurrentTab] = React.useState(0);
+  const [openModal, setOpenModal] = React.useState(false);
 
   async function loadLists() {
     setIsLoading(true);
@@ -83,6 +87,10 @@ export default function ListsView({navigation}) {
     });
   }, [navigation]);
 
+  function closeModal() {
+    setOpenModal(false);
+  }
+
   return (
     <TemplateScreen>
       <Header navigation={navigation} title={'LISTAS'} />
@@ -110,7 +118,7 @@ export default function ListsView({navigation}) {
               flexDirection: 'row',
             }}>
             <Pressable
-              onPress={() => navigation.navigate('ListItemView', {item: null})}
+              onPress={() => setOpenModal(true)}
               style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -175,6 +183,12 @@ export default function ListsView({navigation}) {
         </ScrollView>
       </View>
       <ModalLoading open={isLoading} />
+      <ModalCreateList
+        open={openModal}
+        onClose={closeModal}
+        userSession={userSession}
+        refresh={loadLists}
+      />
     </TemplateScreen>
   );
 }
