@@ -19,6 +19,7 @@ import {
   updatePasswordService,
 } from '../../service/userService';
 import {Eye, EyeSlash} from 'phosphor-react-native';
+import ModalLoading from '../../components/ModalLoading';
 
 export default function ProfileView({navigation}) {
   const userSession = useSelector(state => {
@@ -33,7 +34,10 @@ export default function ProfileView({navigation}) {
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   async function loadUserData() {
+    setIsLoading(true);
     await readUserService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -46,17 +50,23 @@ export default function ProfileView({navigation}) {
         setEmail(response.data.email);
         setUsername(response.data.username);
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function updatePassword() {
+    setIsLoading(true);
     if (!newPassword || !confirmNewPassword) {
       Alert.alert('Preencher senha');
+      setIsLoading(false);
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
       Alert.alert('Senhas não são iguais');
+      setIsLoading(false);
       return;
     }
 
@@ -75,17 +85,24 @@ export default function ProfileView({navigation}) {
           Alert.alert('Não foi possível alterar a senha');
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function deleteUser() {
+    setIsLoading(true);
     await deleteUserService({idUser: userSession.id})
       .then(responseDelete => {
         if (responseDelete.status === 200) {
           signOut();
         }
       })
-      .catch(err => {});
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   async function signOut() {
@@ -396,6 +413,7 @@ export default function ProfileView({navigation}) {
           </Pressable>
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }

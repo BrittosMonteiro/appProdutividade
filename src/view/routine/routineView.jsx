@@ -1,12 +1,6 @@
 import * as React from 'react';
 import {CaretRight} from 'phosphor-react-native';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
 
 import TemplateScreen from '../templateScreen';
@@ -16,6 +10,7 @@ import EmptyMessage from '../../components/EmptyMessage';
 import {readRoutineListService} from '../../service/routineService';
 import HorizontalRule from '../../components/HorizontalRule';
 import SearchText from '../../components/SearchText';
+import ModalLoading from '../../components/ModalLoading';
 
 export default function RoutineView({navigation}) {
   const userSession = useSelector(state => {
@@ -130,7 +125,7 @@ export default function RoutineView({navigation}) {
                     gap: 8,
                     justifyContent: 'center',
                   }}>
-                  <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                  {/* <ActivityIndicator color={'#1e1e1e'} size={'small'} /> */}
                   <EmptyMessage message={'BUSCANDO ATIVIDADES'} />
                 </View>
               ) : (
@@ -140,6 +135,7 @@ export default function RoutineView({navigation}) {
           )}
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }

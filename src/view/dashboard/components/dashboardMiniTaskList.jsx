@@ -7,7 +7,10 @@ import Title from '../../../components/Title';
 import {readTaskMiniListService} from '../../../service/taskService';
 import DashboardMiniTaskListItem from './dashboardMiniTaskListItem';
 
-export default function DashboardMiniTaskList({navigation}) {
+export default function DashboardMiniTaskList({
+  navigation,
+  setIsLoadingMiniTaskList,
+}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
@@ -16,6 +19,7 @@ export default function DashboardMiniTaskList({navigation}) {
 
   async function loadTasks() {
     setIsLoading(true);
+    setIsLoadingMiniTaskList(true);
     await readTaskMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -25,9 +29,10 @@ export default function DashboardMiniTaskList({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
+        setIsLoadingMiniTaskList(false);
       });
   }
 
@@ -74,7 +79,7 @@ export default function DashboardMiniTaskList({navigation}) {
           <>
             {isLoading ? (
               <View style={{display: 'flex', flexDirection: 'row', gap: 8}}>
-                <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                {/* <ActivityIndicator color={'#1e1e1e'} size={'small'} /> */}
                 <EmptyMessage message={'BUSCANDO TAREFAS'} />
               </View>
             ) : (

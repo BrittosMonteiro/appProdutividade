@@ -8,7 +8,10 @@ import Title from '../../../components/Title';
 import {readRoutineMiniListService} from '../../../service/routineService';
 import DashboardMiniRoutineListItem from './dashboardMiniRoutineListItem';
 
-export default function DashboardMiniRoutineList({navigation}) {
+export default function DashboardMiniRoutineList({
+  navigation,
+  setIsLoadingMiniRoutineList,
+}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
@@ -17,6 +20,8 @@ export default function DashboardMiniRoutineList({navigation}) {
 
   async function loadRoutines() {
     setIsLoading(true);
+    setIsLoadingMiniRoutineList(true);
+
     await readRoutineMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -26,9 +31,10 @@ export default function DashboardMiniRoutineList({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
+        setIsLoadingMiniRoutineList(false);
       });
   }
 
@@ -71,7 +77,7 @@ export default function DashboardMiniRoutineList({navigation}) {
           <>
             {isLoading ? (
               <View style={{display: 'flex', flexDirection: 'row', gap: 8}}>
-                <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                {/* <ActivityIndicator color={'#1e1e1e'} size={'small'} /> */}
                 <EmptyMessage message={'BUSCANDO ATIVIDADES'} />
               </View>
             ) : (
