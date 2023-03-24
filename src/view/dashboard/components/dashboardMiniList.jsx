@@ -8,7 +8,7 @@ import DashboardMiniListItem from './dashboardMiniListItem';
 import EmptyMessage from '../../../components/EmptyMessage';
 import {readMiniListService} from '../../../service/listsService';
 
-export default function DashboardMiniList({navigation}) {
+export default function DashboardMiniList({navigation, setIsLoadingMiniList}) {
   const userSession = useSelector(state => {
     return state.userSessionReducer;
   });
@@ -17,6 +17,8 @@ export default function DashboardMiniList({navigation}) {
 
   async function loadLists() {
     setIsLoading(true);
+    setIsLoadingMiniList(true);
+
     await readMiniListService(userSession.id)
       .then(responseRead => {
         if (responseRead.status === 200) {
@@ -26,9 +28,10 @@ export default function DashboardMiniList({navigation}) {
       .then(response => {
         setItems(response.data);
       })
-      .catch(err => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
+        setIsLoadingMiniList(false);
       });
   }
 
@@ -79,7 +82,7 @@ export default function DashboardMiniList({navigation}) {
         <>
           {isLoading ? (
             <View style={{display: 'flex', flexDirection: 'row', gap: 8}}>
-              <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+              {/* <ActivityIndicator color={'#1e1e1e'} size={'small'} /> */}
               <EmptyMessage message={'BUSCANDO LISTAS'} />
             </View>
           ) : (

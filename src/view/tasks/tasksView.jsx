@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import {Pressable, ScrollView, Text, View} from 'react-native';
 import {CaretRight} from 'phosphor-react-native';
 import {useSelector} from 'react-redux';
 
@@ -17,6 +11,7 @@ import TasksListItem from './components/tasksListItem';
 import Tabs from '../../components/Tabs';
 import HorizontalRule from '../../components/HorizontalRule';
 import SearchText from '../../components/SearchText';
+import ModalLoading from '../../components/ModalLoading';
 
 export default function TasksView({navigation}) {
   const userSession = useSelector(state => {
@@ -26,7 +21,6 @@ export default function TasksView({navigation}) {
   const [itemsList, setItemsList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentTab, setCurrentTab] = React.useState(0);
-  const [searchText, setSearchText] = React.useState('');
 
   async function loadTasks() {
     setIsLoading(true);
@@ -172,7 +166,7 @@ export default function TasksView({navigation}) {
                     gap: 8,
                     justifyContent: 'center',
                   }}>
-                  <ActivityIndicator color={'#1e1e1e'} size={'small'} />
+                  {/* <ActivityIndicator color={'#1e1e1e'} size={'small'} /> */}
                   <EmptyMessage message={'BUSCANDO TAREFAS'} />
                 </View>
               ) : (
@@ -182,6 +176,7 @@ export default function TasksView({navigation}) {
           )}
         </ScrollView>
       </View>
+      <ModalLoading open={isLoading} />
     </TemplateScreen>
   );
 }

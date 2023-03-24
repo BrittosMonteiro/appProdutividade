@@ -9,9 +9,15 @@ import DashboardMiniTaskList from './components/dashboardMiniTaskList';
 import DashboardMiniRoutineList from './components/dashboardMiniRoutineList';
 import DashboardHeader from './components/dashboardHeader';
 import ModalConnection from '../../components/ModalConnection';
+import ModalLoading from '../../components/ModalLoading';
 
 export default function DashboardView({navigation}) {
   const [openModalConnection, setOpenModalConnection] = React.useState(false);
+  const [isLoadingMiniTaskList, setIsLoadingMiniTaskList] =
+    React.useState(false);
+  const [isLoadingMiniList, setIsLoadingMiniList] = React.useState(false);
+  const [isLoadingMiniRoutineList, setIsLoadingMiniRoutineList] =
+    React.useState(false);
   const netInfo = useNetInfo();
 
   function checkInternetConnection() {
@@ -42,17 +48,31 @@ export default function DashboardView({navigation}) {
             gap: 24,
             paddingHorizontal: 16,
           }}>
-          <DashboardMiniTaskList navigation={navigation} />
+          <DashboardMiniTaskList
+            navigation={navigation}
+            setIsLoadingMiniTaskList={setIsLoadingMiniTaskList}
+          />
           <HorizontalRule />
-          <DashboardMiniList navigation={navigation} />
+          <DashboardMiniList
+            navigation={navigation}
+            setIsLoadingMiniList={setIsLoadingMiniList}
+          />
           <HorizontalRule />
-          <DashboardMiniRoutineList navigation={navigation} />
+          <DashboardMiniRoutineList
+            navigation={navigation}
+            setIsLoadingMiniRoutineList={setIsLoadingMiniRoutineList}
+          />
         </ScrollView>
         <ModalConnection
           open={openModalConnection}
           refreshConnection={checkInternetConnection}
         />
       </View>
+      <ModalLoading
+        open={
+          isLoadingMiniTaskList && isLoadingMiniList && isLoadingMiniRoutineList
+        }
+      />
     </TemplateScreen>
   );
 }
